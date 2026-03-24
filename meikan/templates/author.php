@@ -60,7 +60,7 @@
 <?php $headingText = '最新記事'; require TEMPLATE_DIR . '/partials/section-heading.php'; ?>
 <div class="article-list">
     <?php foreach ($articles as $article): ?>
-    <a href="<?= h(url('articles/' . $article['slug'] . '/')) ?>" class="article-list-card">
+    <a href="<?= h(url('article/' . $article['slug'] . '/')) ?>" class="article-list-card">
         <div class="article-list-card__body">
             <?php if (!empty($article['category'])): ?>
             <span class="article-list-card__category"><?= h($article['category']) ?></span>

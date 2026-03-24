@@ -16,6 +16,20 @@ class SitemapController
             'priority' => '1.0',
         ];
 
+        // 名鑑TOP
+        $urls[] = [
+            'loc' => fullUrl('meikan/'),
+            'changefreq' => 'daily',
+            'priority' => '0.9',
+        ];
+
+        // 記事一覧
+        $urls[] = [
+            'loc' => fullUrl('article/'),
+            'changefreq' => 'weekly',
+            'priority' => '0.8',
+        ];
+
         // 女優ページ + ジャンルページ
         foreach ($actresses as $actress) {
             $urls[] = [

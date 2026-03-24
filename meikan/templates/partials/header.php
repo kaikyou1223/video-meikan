@@ -5,7 +5,8 @@
             <span></span><span></span><span></span>
         </button>
         <nav class="header__nav" id="globalNav">
-            <a href="<?= url('articles/') ?>" class="header__nav-link">記事一覧</a>
+            <a href="<?= url('meikan/') ?>" class="header__nav-link">名鑑</a>
+            <a href="<?= url('article/') ?>" class="header__nav-link">記事一覧</a>
         </nav>
     </div>
 </header>
