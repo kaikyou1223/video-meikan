@@ -1,0 +1,12 @@
+# 機密ファイル
+secret.md
+*.zip
+
+# 環境依存
+meikan/.env
+meikan/cache/
+meikan/logs/
+meikan/batch/data/
+
+# OS
+.DS_Store
