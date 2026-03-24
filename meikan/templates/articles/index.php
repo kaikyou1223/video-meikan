@@ -3,7 +3,7 @@
 
 <div class="article-list">
     <?php foreach ($articles as $article): ?>
-    <a href="<?= h(url('articles/' . $article['slug'] . '/')) ?>" class="article-list-card">
+    <a href="<?= h(url('article/' . $article['slug'] . '/')) ?>" class="article-list-card">
         <div class="article-list-card__body">
             <?php if (!empty($article['category'])): ?>
             <span class="article-list-card__category"><?= h($article['category']) ?></span>

@@ -5,6 +5,13 @@ require_once __DIR__ . '/src/helpers.php';
 require_once __DIR__ . '/src/Cache.php';
 require_once __DIR__ . '/src/Router.php';
 
+// 301リダイレクト: 旧URL → 新URL
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+if (preg_match('#^/articles/(.*)$#', $uri, $m)) {
+    header('Location: /article/' . $m[1], true, 301);
+    exit;
+}
+
 // 記事系（DB不要）
 require_once __DIR__ . '/src/controllers/ArticleController.php';
 require_once __DIR__ . '/src/controllers/AuthorController.php';
@@ -17,6 +24,7 @@ if ($dbAvailable) {
     require_once __DIR__ . '/src/models/Actress.php';
     require_once __DIR__ . '/src/models/Genre.php';
     require_once __DIR__ . '/src/models/Work.php';
+    require_once __DIR__ . '/src/controllers/HomeController.php';
     require_once __DIR__ . '/src/controllers/TopController.php';
     require_once __DIR__ . '/src/controllers/ActressController.php';
     require_once __DIR__ . '/src/controllers/GenreController.php';
@@ -26,13 +34,14 @@ if ($dbAvailable) {
 $router = new Router();
 
 // 記事系ルート（常に有効）
-$router->add('articles/', 'ArticleController@index');
-$router->add('articles/{article_slug}/', 'ArticleController@show');
+$router->add('article/', 'ArticleController@index');
+$router->add('article/{article_slug}/', 'ArticleController@show');
 $router->add('author/', 'AuthorController@show');
 
 // DB系ルート（DB接続可能な場合のみ）
 if ($dbAvailable) {
-    $router->add('', 'TopController@index');
+    $router->add('', 'HomeController@index');
+    $router->add('meikan/', 'TopController@index');
     $router->add('sitemap.xml', 'SitemapController@index');
     $router->add('{actress_slug}/', 'ActressController@show');
     $router->add('{actress_slug}/{genre_slug}/', 'GenreController@show');

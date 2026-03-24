@@ -25,7 +25,7 @@
 <?php $headingText = '関連記事'; require TEMPLATE_DIR . '/partials/section-heading.php'; ?>
 <div class="article-list">
     <?php foreach ($related as $rel): ?>
-    <a href="<?= h(url('articles/' . $rel['slug'] . '/')) ?>" class="article-list-card">
+    <a href="<?= h(url('article/' . $rel['slug'] . '/')) ?>" class="article-list-card">
         <div class="article-list-card__body">
             <?php if (!empty($rel['category'])): ?>
             <span class="article-list-card__category"><?= h($rel['category']) ?></span>

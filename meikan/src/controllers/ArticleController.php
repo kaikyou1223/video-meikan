@@ -40,7 +40,7 @@ class ArticleController
             'metaDescription' => $article['description'],
             'breadcrumbs' => [
                 ['label' => 'TOP', 'url' => ''],
-                ['label' => '記事一覧', 'url' => 'articles/'],
+                ['label' => '記事一覧', 'url' => 'article/'],
                 ['label' => $article['title'], 'url' => ''],
             ],
             'article' => $article,
