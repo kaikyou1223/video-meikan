@@ -148,18 +148,4 @@
         observer.observe(loader);
     }
 
-    // --- 似ている女優サイドバー: PCのみ、2スクロール後にフェードイン ---
-    var sidebar = document.getElementById('similarSidebar');
-    if (sidebar && window.innerWidth >= 768) {
-        var shown = false;
-        var onScroll = function () {
-            if (shown) return;
-            if (window.scrollY > window.innerHeight * 2) {
-                sidebar.classList.add('is-visible');
-                shown = true;
-                window.removeEventListener('scroll', onScroll);
-            }
-        };
-        window.addEventListener('scroll', onScroll, { passive: true });
-    }
 })();
