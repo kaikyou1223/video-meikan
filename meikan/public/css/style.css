@@ -1269,67 +1269,7 @@ ul, ol { list-style: none; }
     padding: 8px;
 }
 
-/* --- Genre Layout (2-column on PC) --- */
-.genre-layout {
-    display: block;
-}
-.genre-layout__main {
-    min-width: 0;
-}
-
-/* --- Similar Sidebar (genre page, PC only) --- */
-.genre-layout__sidebar {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-.genre-layout__sidebar.is-visible {
-    opacity: 1;
-}
-.similar-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-.similar-sidebar__title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--color-text);
-    padding-bottom: 4px;
-    border-bottom: 2px solid var(--color-accent);
-}
-.similar-sidebar__item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-.similar-sidebar__image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #E8E8EA;
-}
-.similar-sidebar__image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.similar-sidebar__placeholder {
-    width: 100%;
-    height: 100%;
-    background: #E8E8EA;
-}
-.similar-sidebar__name {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 6px;
-    line-height: 1.3;
-}
-
-/* --- Similar Inline Card (SP, genre page) --- */
+/* --- Similar Inline Card (genre page) --- */
 .similar-inline {
     background: var(--color-bg);
     border: 1px solid #E0E0E2;
@@ -1403,20 +1343,6 @@ ul, ol { list-style: none; }
     .similar-actress-grid {
         grid-template-columns: repeat(5, 1fr);
         gap: 16px;
-    }
-    .similar-inline {
-        display: none;
-    }
-    .genre-layout {
-        display: grid;
-        grid-template-columns: 1fr 160px;
-        gap: 20px;
-    }
-    .genre-layout__sidebar {
-        display: block;
-        align-self: start;
-        position: sticky;
-        top: 80px;
     }
     .work-list {
         display: grid;
@@ -1516,22 +1442,6 @@ ul, ol { list-style: none; }
         z-index: 10;
         padding-top: 8px;
         padding-bottom: 8px;
-    }
-    /* Inline card hidden on PC (sidebar used instead) */
-    .similar-inline {
-        display: none;
-    }
-    /* Genre layout: 2-column with sidebar */
-    .genre-layout {
-        display: grid;
-        grid-template-columns: 1fr 180px;
-        gap: 24px;
-    }
-    .genre-layout__sidebar {
-        display: block;
-        align-self: start;
-        position: sticky;
-        top: calc(var(--header-h-pc) + 160px);
     }
 }
 
