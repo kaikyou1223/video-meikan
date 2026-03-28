@@ -22,6 +22,82 @@ if (!$affiliateId) {
 
 $db = Database::getInstance();
 
+/**
+ * 女優名が一致するか判定（括弧内の別名も照合）
+ * API名「木下ひまり（花沢ひまり）」⇔ DB名「木下ひまり」or「花沢ひまり」→ true
+ * 完全一致 or 括弧の外側/内側と一致する場合のみtrue
+ */
+function actressNameMatches(string $apiName, string $dbName): bool
+{
+    if ($apiName === $dbName) return true;
+    // 括弧付き: "メイン名（別名）" の構造を分解
+    if (preg_match('/^(.+?)（(.+?)）$/', $apiName, $m)) {
+        if ($m[1] === $dbName || $m[2] === $dbName) return true;
+    }
+    return false;
+}
+
+/**
+ * 作品APIから女優IDを逆引きし、ActressSearchでプロフィール画像を取得する
+ */
+function resolveImageViaWork(PDO $db, array $actress, string $apiId, string $affiliateId): string
+{
+    // 出演者数が少ない作品を優先（名前特定しやすい）
+    $stmt = $db->prepare('
+        SELECT w.source_id
+        FROM works w
+        INNER JOIN actress_work aw ON w.id = aw.work_id
+        WHERE aw.actress_id = ? AND w.source = "fanza"
+        ORDER BY (SELECT COUNT(*) FROM actress_work aw2 WHERE aw2.work_id = w.id) ASC
+        LIMIT 3
+    ');
+    $stmt->execute([$actress['id']]);
+    $works = $stmt->fetchAll();
+
+    foreach ($works as $work) {
+        usleep(500000);
+        $params = http_build_query([
+            'api_id' => $apiId, 'affiliate_id' => $affiliateId,
+            'site' => 'FANZA', 'service' => 'digital',
+            'cid' => $work['source_id'], 'hits' => 1, 'output' => 'json',
+        ]);
+        $resp = @file_get_contents('https://api.dmm.com/affiliate/v3/ItemList?' . $params);
+        if ($resp === false) continue;
+
+        $data = json_decode($resp, true);
+        $item = $data['result']['items'][0] ?? null;
+        if (!$item) continue;
+
+        // 作品の出演者リストから名前一致でIDを取得
+        // 括弧付き別名も照合: API「木下ひまり（花沢ひまり）」⇔ DB「木下ひまり」or「花沢ひまり」
+        foreach ($item['iteminfo']['actress'] ?? [] as $a) {
+            if (!actressNameMatches($a['name'] ?? '', $actress['name'])) continue;
+            $actressId = $a['id'] ?? null;
+            if (!$actressId) continue;
+
+            // ActressSearch by ID
+            usleep(500000);
+            $params2 = http_build_query([
+                'api_id' => $apiId, 'affiliate_id' => $affiliateId,
+                'site' => 'FANZA', 'actress_id' => $actressId, 'output' => 'json',
+            ]);
+            $resp2 = @file_get_contents('https://api.dmm.com/affiliate/v3/ActressSearch?' . $params2);
+            if ($resp2 === false) continue;
+
+            $data2 = json_decode($resp2, true);
+            $result = $data2['result']['actress'][0] ?? null;
+            if (!$result) continue;
+
+            $img = $result['imageURL']['large'] ?? $result['imageURL']['small'] ?? '';
+            if ($img) {
+                batchLog("  ID逆引き成功: {$actress['name']} (actress_id={$actressId})");
+                return $img;
+            }
+        }
+    }
+    return '';
+}
+
 // thumbnail_url が未設定または作品画像URLの女優を対象にする
 // ※ actjpgs/ を含むURLは正しいプロフィール画像なので除外
 $actresses = $db->query('
@@ -74,19 +150,19 @@ foreach ($actresses as $actress) {
         }
     }
 
-    if (!$matched) {
-        batchLog("  見つからず: {$actress['name']}");
-        $notFound++;
-        usleep(500000);
-        continue;
-    }
-
     // プロフィール画像を取得（large > small の優先順）
     $imageUrl = '';
-    if (!empty($matched['imageURL']['large'])) {
-        $imageUrl = $matched['imageURL']['large'];
-    } elseif (!empty($matched['imageURL']['small'])) {
-        $imageUrl = $matched['imageURL']['small'];
+    if ($matched) {
+        if (!empty($matched['imageURL']['large'])) {
+            $imageUrl = $matched['imageURL']['large'];
+        } elseif (!empty($matched['imageURL']['small'])) {
+            $imageUrl = $matched['imageURL']['small'];
+        }
+    }
+
+    // フォールバック: 名前検索で画像が取れなかった場合、作品APIから女優IDを逆引き
+    if (!$imageUrl) {
+        $imageUrl = resolveImageViaWork($db, $actress, $apiId, $affiliateId);
     }
 
     if (!$imageUrl) {
