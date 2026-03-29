@@ -9,12 +9,15 @@ $bcJsonLd = [
     <?php foreach ($breadcrumbs as $i => $bc): ?>
         <?php
         $pos = $i + 1;
-        $bcJsonLd['itemListElement'][] = [
+        $element = [
             '@type' => 'ListItem',
             'position' => $pos,
             'name' => $bc['label'],
-            'item' => $bc['url'] ? fullUrl($bc['url']) : null,
         ];
+        if (!empty($bc['url'])) {
+            $element['item'] = fullUrl($bc['url']);
+        }
+        $bcJsonLd['itemListElement'][] = $element;
         ?>
         <?php if ($i > 0): ?><span class="breadcrumb__sep">&rsaquo;</span><?php endif; ?>
         <?php if (!empty($bc['url'])): ?>
