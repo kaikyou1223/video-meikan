@@ -870,10 +870,10 @@ ul, ol { list-style: none; }
 }
 .cast-table__actress {
     text-align: center;
-    width: 260px;
+    width: 360px;
 }
 .cast-table__actress img {
-    width: 230px;
+    width: 345px;
     height: auto;
     object-fit: cover;
     border-radius: 6px;
@@ -885,6 +885,44 @@ ul, ol { list-style: none; }
     font-size: 14px;
     font-weight: 700;
     color: var(--color-accent);
+    text-align: center;
+    text-decoration: none;
+}
+.cast-table__name:hover {
+    text-decoration: underline;
+}
+.cast-table-collapsible .cast-table__row--extra {
+    display: none;
+}
+.cast-table-collapsible.is-open .cast-table__row--extra {
+    display: table-row;
+}
+.cast-table__toggle {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #f5f5f7;
+    border: 1px solid var(--color-border);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-accent);
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s;
+}
+.cast-table__toggle:hover {
+    background: #eaeaec;
+}
+.cast-table__toggle-less {
+    display: none;
+}
+.cast-table-collapsible.is-open .cast-table__toggle-more {
+    display: none;
+}
+.cast-table-collapsible.is-open .cast-table__toggle-less {
+    display: inline;
 }
 .cast-table__body span {
     display: block;
@@ -894,10 +932,10 @@ ul, ol { list-style: none; }
 }
 @media (max-width: 767px) {
     .cast-table__actress {
-        width: 160px;
+        width: 230px;
     }
     .cast-table__actress img {
-        width: 140px;
+        width: 210px;
         height: auto;
     }
     .cast-table__name {
@@ -937,12 +975,16 @@ ul, ol { list-style: none; }
     display: block;
 }
 .embed-card__title--work {
-    padding: 12px 16px;
+    padding: 12px 16px 8px;
     font-size: 14px;
     font-weight: 700;
     line-height: 1.5;
-    color: var(--color-accent);
+    color: var(--color-text);
     text-align: center;
+}
+.embed-card__inner--work:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: var(--color-accent);
 }
 
 /* --- Article Figure (block-level image) --- */
@@ -956,6 +998,24 @@ ul, ol { list-style: none; }
 }
 
 /* --- Article Samples (side-by-side image grid) --- */
+.article-samples-cta {
+    text-align: center;
+    margin: 12px 0 28px;
+}
+.article-samples-cta__btn {
+    display: inline-block;
+    background: var(--color-accent);
+    color: #fff !important;
+    text-decoration: none !important;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 36px;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+.article-samples-cta__btn:hover {
+    background: var(--color-accent-hover);
+}
 .article-samples {
     display: grid;
     grid-template-columns: 1fr 1fr;

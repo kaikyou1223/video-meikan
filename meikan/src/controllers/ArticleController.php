@@ -4,6 +4,7 @@ class ArticleController
 {
     private const ARTICLES_DIR = ROOT_DIR . '/content/articles';
     private static ?string $currentAffiliateId = null;
+    private static ?string $lastWorkUrl = null;
 
     public function index(array $params): void
     {
@@ -145,6 +146,7 @@ class ArticleController
         $boxType = '';
         $boxTitle = '';
         $boxLines = [];
+        $castCustomLabels = null;
         $inBlockquote = false;
         $blockquoteLines = [];
 
@@ -163,6 +165,15 @@ class ArticleController
                 $blockquoteLines = [];
             }
         };
+
+        // h2見出し名を事前収集（キャスト表のアンカーリンク有無の判定に使用）
+        $h2Names = [];
+        foreach ($lines as $line) {
+            $t = trim($line);
+            if (str_starts_with($t, '## ')) {
+                $h2Names[] = trim(substr($t, 3));
+            }
+        }
 
         foreach ($lines as $line) {
             $trimmed = trim($line);
@@ -187,12 +198,13 @@ class ArticleController
             }
 
             // --- キャストカード開始 ---
-            if (preg_match('/^:::cast(?:\[(.+?)\])?$/', $trimmed, $castMatch)) {
+            if (preg_match('/^:::cast(?:\[(.+?)\])?(?:\{(.+?)\})?$/', $trimmed, $castMatch)) {
                 $closeList();
                 $flushBlockquote();
                 $inBox = true;
                 $boxType = 'cast';
                 $boxTitle = $castMatch[1] ?? '';
+                $castCustomLabels = isset($castMatch[2]) ? array_map('trim', explode(',', $castMatch[2])) : null;
                 $boxLines = [];
                 continue;
             }
@@ -245,38 +257,63 @@ class ArticleController
             if ($trimmed === ':::' && $inBox) {
                 if ($boxType === 'cast') {
                     $tableTitle = $boxTitle ?: 'AV女優';
-                    $out = '<div class="article-table-wrap"><table class="cast-table">';
+                    $label3 = $castCustomLabels[0] ?? '体型';
+                    $label4 = $castCustomLabels[1] ?? '身長';
+                    $label5 = $castCustomLabels[2] ?? '年齢';
+                    $castCustomLabels = null;
+
+                    // 有効な行だけ抽出
+                    $castRows = array_values(array_filter($boxLines, fn($l) => trim($l) !== ''));
+                    $totalRows = count($castRows);
+                    $collapseThreshold = 4;
+                    $hasExtra = $totalRows > $collapseThreshold;
+
+                    $out = '<div class="article-table-wrap cast-table-collapsible' . ($hasExtra ? ' is-collapsed' : '') . '">';
+                    $out .= '<table class="cast-table">';
                     $out .= '<thead><tr>';
                     $out .= '<th>' . h($tableTitle) . '</th>';
-                    $out .= '<th>体型</th>';
+                    $out .= '<th>' . h($label3) . ' / ' . h($label4) . ' / ' . h($label5) . '</th>';
                     $out .= '</tr></thead><tbody>';
 
-                    foreach ($boxLines as $bl) {
-                        $bl = trim($bl);
-                        if ($bl === '') continue;
+                    foreach ($castRows as $i => $bl) {
                         $parts = array_map('trim', explode('|', $bl));
-                        $name = h($parts[0] ?? '');
+                        $nameRaw = $parts[0] ?? '';
+                        $name = h($nameRaw);
+                        $anchorId = 'sec-' . str_replace(' ', '-', $nameRaw);
                         $img = h($parts[2] ?? '');
-                        $size = h($parts[3] ?? '');
-                        $height = h($parts[4] ?? '');
-                        $age = h($parts[5] ?? '');
+                        $val3 = h($parts[3] ?? '');
+                        $val4 = h($parts[4] ?? '');
+                        $val5 = h($parts[5] ?? '');
 
-                        $out .= '<tr>';
+                        $extraClass = ($i >= $collapseThreshold) ? ' cast-table__row--extra' : '';
+                        $out .= '<tr class="cast-table__row' . $extraClass . '">';
                         $out .= '<td class="cast-table__actress">';
                         if ($img) {
                             $out .= '<img src="' . $img . '" alt="' . $name . '" loading="lazy">';
                         }
-                        $out .= '<span class="cast-table__name">' . $name . '</span>';
+                        if (in_array($nameRaw, $h2Names, true)) {
+                            $out .= '<a href="#' . h($anchorId) . '" class="cast-table__name">' . $name . '</a>';
+                        } else {
+                            $out .= '<span class="cast-table__name">' . $name . '</span>';
+                        }
                         $out .= '</td>';
                         $out .= '<td class="cast-table__body">';
-                        if ($size) $out .= '<span>体型：' . $size . '</span>';
-                        if ($height) $out .= '<span>身長：' . $height . '</span>';
-                        if ($age) $out .= '<span>年齢：' . $age . '</span>';
+                        if ($val3) $out .= '<span>' . h($label3) . '：' . $val3 . '</span>';
+                        if ($val4) $out .= '<span>' . h($label4) . '：' . $val4 . '</span>';
+                        if ($val5) $out .= '<span>' . h($label5) . '：' . $val5 . '</span>';
                         $out .= '</td>';
                         $out .= '</tr>';
                     }
 
-                    $out .= '</tbody></table></div>' . "\n";
+                    $out .= '</tbody></table>';
+                    if ($hasExtra) {
+                        $extraCount = $totalRows - $collapseThreshold;
+                        $out .= '<button class="cast-table__toggle" type="button">';
+                        $out .= '<span class="cast-table__toggle-more">もっと見る（残り' . $extraCount . '名）▼</span>';
+                        $out .= '<span class="cast-table__toggle-less">閉じる ▲</span>';
+                        $out .= '</button>';
+                    }
+                    $out .= '</div>' . "\n";
                     $html .= $out;
                     $inBox = false;
                     continue;
@@ -289,6 +326,10 @@ class ArticleController
                         $out .= '<img src="' . h($bl) . '" alt="" loading="lazy">';
                     }
                     $out .= '</div>' . "\n";
+                    if (self::$lastWorkUrl) {
+                        $out .= '<div class="article-samples-cta"><a href="' . h(self::$lastWorkUrl) . '" target="_blank" rel="nofollow noopener" class="article-samples-cta__btn">作品を見る →</a></div>' . "\n";
+                        self::$lastWorkUrl = null;
+                    }
                     $html .= $out;
                     $inBox = false;
                     continue;
@@ -439,8 +480,9 @@ class ArticleController
             // H2
             if (str_starts_with($trimmed, '## ')) {
                 $closeList();
-                $text = h(substr($trimmed, 3));
-                $id = 'h-' . count($toc);
+                $rawText = substr($trimmed, 3);
+                $text = h($rawText);
+                $id = 'sec-' . str_replace(' ', '-', trim($rawText));
                 $toc[] = ['level' => 2, 'text' => $text, 'id' => $id];
                 $html .= "<h2 id=\"{$id}\">{$text}</h2>\n";
                 continue;
@@ -449,8 +491,9 @@ class ArticleController
             // H3
             if (str_starts_with($trimmed, '### ')) {
                 $closeList();
-                $text = h(substr($trimmed, 4));
-                $id = 'h-' . count($toc);
+                $rawText = substr($trimmed, 4);
+                $text = h($rawText);
+                $id = 'sec-' . str_replace(' ', '-', trim($rawText));
                 $toc[] = ['level' => 3, 'text' => $text, 'id' => $id];
                 $html .= "<h3 id=\"{$id}\">{$text}</h3>\n";
                 continue;
@@ -557,6 +600,7 @@ class ArticleController
         $fallbackThumb = 'https://pics.dmm.co.jp/digital/video/' . $sourceId . '/' . $sourceId . 'pl.jpg';
 
         if (!$work) {
+            self::$lastWorkUrl = $affiliateUrl;
             $html = '<div class="embed-card embed-card--work">';
             $html .= '<a href="' . h($affiliateUrl) . '" target="_blank" rel="nofollow noopener" class="embed-card__inner embed-card__inner--work">';
             $html .= '<div class="embed-card__image embed-card__image--work"><img src="' . h($fallbackThumb) . '" alt="' . h($linkText ?: $sourceId) . '" loading="lazy"></div>';
@@ -568,6 +612,7 @@ class ArticleController
         $thumb = h($work['thumbnail_url'] ?? '') ?: h($fallbackThumb);
         $title = h($work['title'] ?? '');
         $url = !empty($work['affiliate_url']) ? $work['affiliate_url'] : $affiliateUrl;
+        self::$lastWorkUrl = $url;
 
         $html = '<div class="embed-card embed-card--work">';
         $html .= '<a href="' . h($url) . '" target="_blank" rel="nofollow noopener" class="embed-card__inner embed-card__inner--work">';

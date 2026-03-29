@@ -10,3 +10,14 @@ document.addEventListener('DOMContentLoaded', function () {
         nav.classList.toggle('is-open');
     });
 });
+
+// Cast Table: もっと見る / 閉じる
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.cast-table-collapsible').forEach(function (wrap) {
+        var btn = wrap.querySelector('.cast-table__toggle');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+            wrap.classList.toggle('is-open');
+        });
+    });
+});
