@@ -105,4 +105,64 @@ class Actress
         $db = Database::getInstance();
         return $db->query('SELECT slug, updated_at FROM actresses ORDER BY id')->fetchAll();
     }
+
+    /**
+     * 指定月にデビューした女優一覧を取得
+     * @param string $yearMonth YYYY-MM形式
+     */
+    public static function findByDebutMonth(string $yearMonth): array
+    {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('
+            SELECT a.*, COUNT(aw.work_id) AS work_count
+            FROM actresses a
+            LEFT JOIN actress_work aw ON a.id = aw.actress_id
+            WHERE DATE_FORMAT(a.debut_date, "%Y-%m") = ?
+            GROUP BY a.id
+            ORDER BY a.debut_date ASC, a.name ASC
+        ');
+        $stmt->execute([$yearMonth]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * 直近Nヶ月以内にデビューした女優一覧を取得
+     */
+    public static function findRecentDebuts(int $months = 6): array
+    {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('
+            SELECT a.*, COUNT(aw.work_id) AS work_count
+            FROM actresses a
+            LEFT JOIN actress_work aw ON a.id = aw.actress_id
+            WHERE a.debut_date >= DATE_SUB(CURDATE(), INTERVAL ? MONTH)
+            GROUP BY a.id
+            ORDER BY a.debut_date DESC, a.name ASC
+        ');
+        $stmt->execute([$months]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * 直近Nヶ月以内にデビューし、指定ジャンルの作品を持つ女優一覧
+     */
+    public static function findRecentDebutsByGenre(string $genreSlug, int $months = 6): array
+    {
+        $db = Database::getInstance();
+        $stmt = $db->prepare('
+            SELECT a.*, COUNT(DISTINCT aw.work_id) AS work_count,
+                   COUNT(DISTINCT wg.work_id) AS genre_work_count
+            FROM actresses a
+            INNER JOIN actress_work aw ON a.id = aw.actress_id
+            INNER JOIN works w ON aw.work_id = w.id
+            LEFT JOIN work_genre wg ON w.id = wg.work_id
+            LEFT JOIN genres g ON wg.genre_id = g.id AND g.slug = ?
+            WHERE a.debut_date >= DATE_SUB(CURDATE(), INTERVAL ? MONTH)
+            GROUP BY a.id
+            HAVING genre_work_count > 0
+            ORDER BY genre_work_count DESC, a.debut_date DESC
+        ');
+        $stmt->execute([$genreSlug, $months]);
+        return $stmt->fetchAll();
+    }
 }
