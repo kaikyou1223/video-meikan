@@ -172,12 +172,43 @@ ul, ol { list-style: none; }
     margin-bottom: 16px;
 }
 
+/* --- Top Section --- */
+.top-section {
+    margin-bottom: 36px;
+}
+.top-section__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-left: 12px;
+    border-left: 3px solid var(--color-accent);
+}
+.top-section__more {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    margin-top: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius);
+    transition: background 0.2s, color 0.2s;
+}
+.top-section__more:hover {
+    background: var(--color-accent);
+    color: #fff;
+}
+
 /* --- Actress Grid --- */
 .actress-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     margin-bottom: 24px;
+}
+.actress-grid--6 {
+    grid-template-columns: repeat(3, 1fr);
 }
 
 /* --- Actress Card --- */
@@ -286,6 +317,10 @@ ul, ol { list-style: none; }
 .profile-detail__table tr:last-child td {
     border-bottom: none;
 }
+.profile-detail__birthday {
+    display: none;
+}
+
 
 /* --- Hakase Comment --- */
 .hakase-comment {
@@ -324,6 +359,28 @@ ul, ol { list-style: none; }
     line-height: 1.7;
     margin: 0;
     color: #333;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.hakase-comment__body.is-expanded .hakase-comment__text {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+}
+.hakase-comment__toggle {
+    background: none;
+    border: none;
+    color: #E65100;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 0 0;
+    display: block;
+}
+.hakase-comment__body.is-expanded .hakase-comment__toggle {
+    /* 展開時もボタン表示 */
 }
 
 /* --- Genre Grid --- */
@@ -1585,6 +1642,17 @@ p > .article-inline-img {
    Tablet (768px+)
    ============================================ */
 @media (min-width: 768px) {
+    .profile-detail__birthday {
+        display: inline;
+    }
+    .hakase-comment__text {
+        display: block;
+        -webkit-line-clamp: unset;
+        overflow: visible;
+    }
+    .hakase-comment__toggle {
+        display: none;
+    }
     .container {
         padding: 0 24px;
     }
@@ -1669,6 +1737,12 @@ p > .article-inline-img {
     .actress-grid {
         grid-template-columns: repeat(4, 1fr);
         gap: 20px;
+    }
+    .actress-grid--6 {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    .top-section__title {
+        font-size: 20px;
     }
     .actress-card__info {
         padding: 12px 16px;

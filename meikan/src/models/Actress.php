@@ -132,6 +132,61 @@ class Actress
         return $result;
     }
 
+    /**
+     * 指定ジャンルの作品が多い女優を取得（サムネイルあり）
+     */
+    public static function findTopByGenre(string $genreSlug, int $limit = 6): array
+    {
+        $cacheKey = 'actresses_top_genre_' . $genreSlug . '_' . $limit;
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) return $cached;
+
+        $db = Database::getInstance();
+        $stmt = $db->prepare('
+            SELECT a.*, COUNT(DISTINCT aw.work_id) AS work_count,
+                   COUNT(DISTINCT CASE WHEN g.slug = ? THEN wg.work_id END) AS genre_work_count
+            FROM actresses a
+            INNER JOIN actress_work aw ON a.id = aw.actress_id
+            INNER JOIN works w ON aw.work_id = w.id
+            LEFT JOIN work_genre wg ON w.id = wg.work_id
+            LEFT JOIN genres g ON wg.genre_id = g.id
+            WHERE a.thumbnail_url IS NOT NULL
+              AND a.thumbnail_url != ""
+              AND a.thumbnail_url NOT LIKE "%/digital/video/%"
+              AND a.thumbnail_url NOT LIKE "%now_printing%"
+            GROUP BY a.id
+            HAVING genre_work_count >= 3
+            ORDER BY genre_work_count DESC, work_count DESC
+            LIMIT ?
+        ');
+        $stmt->execute([$genreSlug, $limit]);
+        $result = $stmt->fetchAll();
+
+        Cache::set($cacheKey, $result);
+        return $result;
+    }
+
+    /**
+     * DBに存在する最新のデビュー月（YYYY-MM形式）を取得
+     */
+    public static function getLatestDebutMonth(): ?string
+    {
+        $cacheKey = 'latest_debut_month';
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) return $cached;
+
+        $db = Database::getInstance();
+        $stmt = $db->query('
+            SELECT DATE_FORMAT(MAX(debut_date), "%Y-%m") AS latest_month
+            FROM actresses
+            WHERE debut_date IS NOT NULL
+        ');
+        $result = $stmt->fetchColumn() ?: null;
+
+        if ($result) Cache::set($cacheKey, $result);
+        return $result;
+    }
+
     public static function allForSitemap(): array
     {
         $db = Database::getInstance();

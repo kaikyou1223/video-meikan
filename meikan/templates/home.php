@@ -1,13 +1,35 @@
 <h1 class="page-title"><?= h(SITE_NAME) ?></h1>
 <p class="page-description"><?= h(SITE_DESCRIPTION) ?></p>
 
-<?php $headingText = 'ピックアップ女優'; require TEMPLATE_DIR . '/partials/section-heading.php'; ?>
-<div class="actress-grid">
-    <?php foreach ($pickupActresses as $actress): ?>
-        <?php require TEMPLATE_DIR . '/partials/actress-card.php'; ?>
-    <?php endforeach; ?>
-</div>
-<p class="home-more"><a href="<?= url('meikan/') ?>" class="home-more__link">女優名鑑をもっと見る &rarr;</a></p>
+<?php if (!empty($debutActresses)): ?>
+<section class="top-section">
+    <h2 class="top-section__title"><?= h($debutMonthLabel) ?>デビューの新人女優</h2>
+    <div class="actress-grid actress-grid--6">
+        <?php foreach ($debutActresses as $actress): ?>
+            <?php require TEMPLATE_DIR . '/partials/actress-card.php'; ?>
+        <?php endforeach; ?>
+    </div>
+    <?php if ($debutArticleSlug): ?>
+        <a href="<?= h(url('article/' . $debutArticleSlug . '/')) ?>" class="top-section__more">もっと見る</a>
+    <?php endif; ?>
+</section>
+<?php endif; ?>
+
+<?php foreach ($genreSections as $section): ?>
+<?php if (!empty($section['actresses'])): ?>
+<section class="top-section">
+    <h2 class="top-section__title"><?= h($section['title']) ?></h2>
+    <div class="actress-grid actress-grid--6">
+        <?php foreach ($section['actresses'] as $actress): ?>
+            <?php require TEMPLATE_DIR . '/partials/actress-card.php'; ?>
+        <?php endforeach; ?>
+    </div>
+    <?php if (!empty($section['article_slug'])): ?>
+        <a href="<?= h(url('article/' . $section['article_slug'] . '/')) ?>" class="top-section__more">もっと見る</a>
+    <?php endif; ?>
+</section>
+<?php endif; ?>
+<?php endforeach; ?>
 
 <?php $headingText = '最新記事'; require TEMPLATE_DIR . '/partials/section-heading.php'; ?>
 <div class="article-list">
