@@ -689,14 +689,14 @@ ul, ol { list-style: none; }
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: var(--color-accent);
-    color: #FFFFFF;
-    font-size: 20px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
     flex-shrink: 0;
+}
+.author-box__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 .author-box__name {
     font-size: 15px;
@@ -730,14 +730,14 @@ ul, ol { list-style: none; }
     width: 72px;
     height: 72px;
     border-radius: 50%;
-    background: var(--color-accent);
-    color: #FFFFFF;
-    font-size: 32px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
     flex-shrink: 0;
+}
+.author-profile__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 .author-profile__name {
     font-size: 24px;
