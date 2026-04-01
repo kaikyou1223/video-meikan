@@ -453,6 +453,7 @@ ul, ol { list-style: none; }
     width: 100%;
     aspect-ratio: 16 / 9;
     flex-shrink: 0;
+    overflow: hidden;
     background: #E8E8EA;
 }
 .work-card__image img {

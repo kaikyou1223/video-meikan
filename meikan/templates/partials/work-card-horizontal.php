@@ -1,3 +1,4 @@
+<?php if (empty($work['title']) && empty($work['thumbnail_url'])) return; ?>
 <?php $cardTag = !empty($work['affiliate_url']) ? 'a' : 'div'; ?>
 <<?= $cardTag ?> class="work-card"<?php if (!empty($work['affiliate_url'])): ?> href="<?= h($work['affiliate_url']) ?>" target="_blank" rel="nofollow noopener"<?php endif; ?>>
     <div class="work-card__image">
