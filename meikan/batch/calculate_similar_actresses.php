@@ -2,7 +2,7 @@
 /**
  * 似ている女優 計算バッチ
  * 各女優のジャンル分布をベクトル化し、コサイン類似度で類似女優を算出する
- * 作品10本以上の女優のみ対象、各女優の上位5件を保存
+ * 作品10本以上の女優のみ対象、各女優の上位10件を保存
  *
  * Usage: php batch/calculate_similar_actresses.php
  */
@@ -84,8 +84,8 @@ foreach ($vectors as $id => $vec) {
     $norms[$id] = sqrt($sum);
 }
 
-// 各女優の上位5件を格納
-$TOP_N = 5;
+// 各女優の上位10件を格納
+$TOP_N = 10;
 $results = [];
 
 for ($i = 0; $i < count($actressIds); $i++) {

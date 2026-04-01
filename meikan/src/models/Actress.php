@@ -80,7 +80,7 @@ class Actress
 
     public static function getSimilarActresses(int $actressId): array
     {
-        $cacheKey = 'similar_actresses_' . $actressId;
+        $cacheKey = 'similar_actresses_10_' . $actressId;
         $cached = Cache::get($cacheKey);
         if ($cached !== null) return $cached;
 
@@ -91,7 +91,7 @@ class Actress
             INNER JOIN actresses a ON sa.similar_actress_id = a.id
             WHERE sa.actress_id = ?
             ORDER BY sa.score DESC
-            LIMIT 5
+            LIMIT 10
         ');
         $stmt->execute([$actressId]);
         $result = $stmt->fetchAll();
@@ -106,7 +106,7 @@ class Actress
      */
     public static function getRelatedActresses(int $actressId): array
     {
-        $cacheKey = 'related_actresses_' . $actressId;
+        $cacheKey = 'related_actresses_10_' . $actressId;
         $cached = Cache::get($cacheKey);
         if ($cached !== null) return $cached;
 
@@ -120,7 +120,7 @@ class Actress
                 INNER JOIN actresses a ON ra.related_actress_id = a.id
                 WHERE ra.actress_id = ?
                 ORDER BY ra.score DESC
-                LIMIT 5
+                LIMIT 10
             ');
             $stmt->execute([$actressId]);
             $result = $stmt->fetchAll();

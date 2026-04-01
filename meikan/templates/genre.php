@@ -32,7 +32,7 @@
         <?php $workIndex++; ?>
         <?php if (($workIndex === 6 || $workIndex === 12) && !empty($similarActresses)): ?>
             <div class="similar-inline <?= $workIndex === 6 ? 'similar-inline--sp' : 'similar-inline--pc' ?>">
-                <p class="similar-inline__title">似ている女優</p>
+                <p class="similar-inline__title"><?= h($actress['name']) ?>が好きな人にはオススメの女優</p>
                 <div class="similar-inline__scroll">
                     <?php foreach ($similarActresses as $similar): ?>
                         <a href="<?= h(url($similar['slug'] . '/')) ?>" class="similar-inline__item">

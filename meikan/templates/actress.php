@@ -72,7 +72,7 @@ $hasProfile = !empty($actress['bust']) || !empty($actress['height']) || !empty($
 <?php endif; ?>
 
 <?php if (!empty($similarActresses)): ?>
-<h2 class="section-title"><?= h($actress['name']) ?>に似ている女優</h2>
+<h2 class="section-title"><?= h($actress['name']) ?>が好きな人にはオススメの女優</h2>
 <div class="similar-actress-grid">
     <?php foreach ($similarActresses as $similar): ?>
         <a href="<?= h(url($similar['slug'] . '/')) ?>" class="similar-actress-card">

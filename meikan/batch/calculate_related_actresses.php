@@ -110,9 +110,9 @@ foreach ($targets as $target) {
         }
     }
 
-    // 上位5件を保存
+    // 上位10件を保存
     arsort($scores);
-    $top5 = array_slice($scores, 0, 5, true);
+    $top5 = array_slice($scores, 0, 10, true);
 
     foreach ($top5 as $relatedId => $score) {
         $insertData[] = [$tid, $relatedId, round($score, 4)];
