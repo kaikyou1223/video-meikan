@@ -18,8 +18,9 @@ class HomeController
 
     public function index(array $params): void
     {
-        // 最新デビュー月の新人女優
-        $latestMonth = Actress::getLatestDebutMonth();
+        // 新人女優セクション: 当月はデータが揃わないためn-1月を表示
+        $lastMonth = date('Y-m', strtotime('first day of last month'));
+        $latestMonth = $lastMonth;
         $debutActresses = [];
         $debutMonthLabel = '';
         if ($latestMonth) {
