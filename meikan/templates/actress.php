@@ -71,36 +71,25 @@ $hasProfile = !empty($actress['bust']) || !empty($actress['height']) || !empty($
 </div>
 <?php endif; ?>
 
-<?php if (!empty($similarActresses)): ?>
-<h2 class="section-title"><?= h($actress['name']) ?>が好きな人にはオススメの女優</h2>
-<div class="similar-actress-grid">
-    <?php foreach ($similarActresses as $similar): ?>
-        <a href="<?= h(url($similar['slug'] . '/')) ?>" class="similar-actress-card">
-            <div class="similar-actress-card__image">
-                <?php if (!empty($similar['thumbnail_url'])): ?>
-                    <img src="<?= h($similar['thumbnail_url']) ?>" alt="<?= h($similar['name']) ?>" width="300" height="300" loading="lazy">
-                <?php else: ?>
-                    <div class="similar-actress-card__placeholder"></div>
-                <?php endif; ?>
-            </div>
-            <p class="similar-actress-card__name"><?= h($similar['name']) ?></p>
-        </a>
-    <?php endforeach; ?>
-</div>
-<?php elseif (!empty($relatedActresses)): ?>
-<h2 class="section-title"><?= h($actress['name']) ?>の関連女優</h2>
-<div class="similar-actress-grid">
-    <?php foreach ($relatedActresses as $related): ?>
-        <a href="<?= h(url($related['slug'] . '/')) ?>" class="similar-actress-card">
-            <div class="similar-actress-card__image">
-                <?php if (!empty($related['thumbnail_url'])): ?>
-                    <img src="<?= h($related['thumbnail_url']) ?>" alt="<?= h($related['name']) ?>" width="300" height="300" loading="lazy">
-                <?php else: ?>
-                    <div class="similar-actress-card__placeholder"></div>
-                <?php endif; ?>
-            </div>
-            <p class="similar-actress-card__name"><?= h($related['name']) ?></p>
-        </a>
-    <?php endforeach; ?>
+<?php
+$recommendActresses = !empty($similarActresses) ? $similarActresses : (!empty($relatedActresses) ? $relatedActresses : []);
+?>
+<?php if (!empty($recommendActresses)): ?>
+<div class="similar-inline">
+    <p class="similar-inline__title"><?= h($actress['name']) ?>が好きな人にはオススメの女優</p>
+    <div class="similar-inline__scroll">
+        <?php foreach ($recommendActresses as $rec): ?>
+            <a href="<?= h(url($rec['slug'] . '/')) ?>" class="similar-inline__item">
+                <div class="similar-inline__image">
+                    <?php if (!empty($rec['thumbnail_url'])): ?>
+                        <img src="<?= h($rec['thumbnail_url']) ?>" alt="<?= h($rec['name']) ?>" width="300" height="300" loading="lazy">
+                    <?php else: ?>
+                        <div class="similar-inline__placeholder"></div>
+                    <?php endif; ?>
+                </div>
+                <span class="similar-inline__name"><?= h($rec['name']) ?></span>
+            </a>
+        <?php endforeach; ?>
+    </div>
 </div>
 <?php endif; ?>
