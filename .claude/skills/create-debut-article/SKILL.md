@@ -25,6 +25,8 @@ metadata:
 
 ### DB照会で候補を取得
 
+**重要: ローカルDBと本番DBのスラグが異なる場合がある。** 漢字名の女優は特に注意。記事に `@actress[slug]` を書く前に、必ず本番DBでスラグを確認すること（Step 2.5 参照）。
+
 モードAの場合:
 ```bash
 php -r '
@@ -80,6 +82,36 @@ foreach ($results as $r) echo $r["name"] . " | " . $r["slug"] . " | debut: " . $
 2. **女優リスト**（名前 + 簡易プロフ一覧）
 3. **各女優の紹介方向性**（1行ずつ）
 4. **記事の目標人数**（モードA: 全員掲載、モードB: 5〜15名程度）
+
+---
+
+## Step 2.5: 本番DBでスラグ整合性を検証（必須）
+
+記事で使用する全女優のスラグが本番DBに存在し、正しい女優を指しているかSSHで検証する。
+
+```bash
+ssh -i ~/.ssh/shinserver_rsa -p 10022 wp2026@sv6810.wpx.ne.jp "cd ~/av-hakase.com/public_html && php -r \"
+define('ROOT_DIR', __DIR__);
+require 'src/Database.php';
+require 'config/database.php';
+\\\$db = Database::getInstance();
+\\\$slugs = ['slug1', 'slug2', 'slug3'];
+foreach (\\\$slugs as \\\$slug) {
+    \\\$stmt = \\\$db->prepare('SELECT id, name, slug FROM actresses WHERE slug = ?');
+    \\\$stmt->execute([\\\$slug]);
+    \\\$row = \\\$stmt->fetch(PDO::FETCH_ASSOC);
+    echo \\\"slug=\\\$slug => \\\" . (\\\$row ? json_encode(\\\$row, JSON_UNESCAPED_UNICODE) : 'NOT FOUND') . PHP_EOL;
+}
+\""
+```
+
+### 不一致が見つかった場合の対処
+
+1. **本番に女優が未登録**: `newcomers_kanji_fix.json` にエントリを追加し、`fix_actress_slugs.php` を本番で実行
+2. **スラグが異なる**: 本番のスラグに合わせて記事の `@actress[slug]` を修正するか、`fix_actress_slugs.php` でスラグを更新
+3. **同じスラグが別の女優に使われている**: `fix_actress_slugs.php` で正しいスラグに変更してから記事を書く
+
+**このステップをスキップしてはならない。** ローカルDBと本番DBのスラグ不一致は、記事公開後にリンク先が別の女優になるバグの原因となる。
 
 ---
 
@@ -401,6 +433,7 @@ foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) echo $r["source_id"] . " | " . 
 - [ ] 各おすすめ作品の下に `:::samples` があるか
 - [ ] h3画像と:::samplesの画像URLが重複していないか
 - [ ] DBにいる女優は `@actress[slug]` で埋め込んでいるか
+- [ ] **本番DBでスラグ整合性を検証済み（Step 2.5）** ← 必須
 - [ ] DBにいない女優はFANZA検索リンクを配置しているか
 - [ ] `:::say` の吹き出しが各女優のおすすめ作品の後にあるか
 - [ ] FANZA作品リンクのCIDが正しいか

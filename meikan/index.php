@@ -12,6 +12,21 @@ if (preg_match('#^/articles/(.*)$#', $uri, $m)) {
     exit;
 }
 
+// スラグ変更リダイレクト: 旧女優slug → 新slug
+$slugRedirectFile = __DIR__ . '/config/slug_redirects.php';
+if (file_exists($slugRedirectFile)) {
+    $slugRedirects = require $slugRedirectFile;
+    // /old-slug/ or /old-slug/genre-slug/ のパターンに対応
+    if (preg_match('#^/([a-z0-9][a-z0-9-]*)(/.*)?\s*$#', $uri, $m)) {
+        $slug = $m[1];
+        $rest = $m[2] ?? '/';
+        if (isset($slugRedirects[$slug])) {
+            header('Location: /' . $slugRedirects[$slug] . $rest, true, 301);
+            exit;
+        }
+    }
+}
+
 // 記事系（DB不要）
 require_once __DIR__ . '/src/controllers/ArticleController.php';
 require_once __DIR__ . '/src/controllers/AuthorController.php';

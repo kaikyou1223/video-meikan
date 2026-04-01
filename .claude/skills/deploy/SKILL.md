@@ -67,6 +67,29 @@ git push --force origin main
 
 ---
 
+## Step 2.5: URL構造の変更チェック（必須）
+
+デプロイ対象の差分にURL構造に影響する変更が含まれていないか確認する。
+
+```bash
+git diff HEAD~1 -- meikan/src/Router.php meikan/index.php meikan/config/slug_redirects.php meikan/batch/fix_actress_slugs.php
+```
+
+**以下に該当する場合、デプロイ前にユーザーに確認する:**
+
+- 女優・ジャンルのスラグが変更されている（`slug_redirects.php` の差分）
+- ルーティングパターンが変更されている（`Router.php` / `index.php` の差分）
+- バッチでスラグの一括変更が行われた
+
+**ユーザーへの確認内容:**
+
+1. 旧URLから新URLへの301リダイレクトを設定するか？
+2. リダイレクト不要であれば、旧URLが404になることを了承するか？
+
+**リダイレクトが必要な場合**: `config/slug_redirects.php` に旧slug→新slugのマッピングを追加する。`index.php` のリダイレクト処理が自動的にこのファイルを参照して301リダイレクトを行う。
+
+---
+
 ## Step 3: 本番サーバーにrsyncでデプロイ
 
 ```bash

@@ -210,7 +210,7 @@ https://pics.dmm.co.jp/digital/video/ebwh00318/ebwh00318jp-9.jpg
 
 憧れ続けた被虐プレイへの渇望を全面に出した演技は、単なる新人の初々しさにとどまらない濃度がある。マゾ気質のお嬢様という難しいキャラクターを自然に体現しており、今後の活躍が非常に楽しみな新人だ。
 
-@actress[shiori]
+@actress[mamiya-shiori]
 
 **デビュー作品**：[親に逆らうことなど一度もなかった美少女が自らの意思でAV出演 箱入りお嬢様の中に21年間、封印されていたいびつな性的妄想が爆発 真宮しおり](https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=mvsd00676/)
 

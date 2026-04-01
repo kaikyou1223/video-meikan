@@ -89,6 +89,14 @@ function generateSlug(string $name, array &$slugSet, string $reading = ''): stri
         'ゃ' => 'ya', 'ゅ' => 'yu', 'ょ' => 'yo',
     ];
 
+    // 漢字を含むかチェック（CJK統合漢字のUnicodeレンジ）
+    $hasKanji = (bool) preg_match('/[\x{4E00}-\x{9FFF}\x{3400}-\x{4DBF}]/u', $name);
+
+    // 漢字を含む名前は読み仮名が必須
+    if ($hasKanji && !$reading) {
+        return ""; // 読みなし漢字名はスラグ生成不可
+    }
+
     // 読み仮名が指定されていればそちらを優先（漢字名対策）
     $source = $reading ?: $name;
 
@@ -148,12 +156,15 @@ function generateSlug(string $name, array &$slugSet, string $reading = ''): stri
         return "";
     }
 
-    // slug重複チェック
+    // slug重複チェック — サフィックス付与時は警告ログ出力
     $baseSlug = $slug;
     $counter = 2;
     while (isset($slugSet[$slug])) {
         $slug = $baseSlug . '-' . $counter;
         $counter++;
+    }
+    if ($slug !== $baseSlug) {
+        batchLog("WARNING: slug重複 '{$baseSlug}' → '{$slug}' に変更 (name: {$name})");
     }
     $slugSet[$slug] = true;
 

@@ -1,0 +1,22 @@
+<?php
+return array (
+  'yukimuraitsuki' => 'yukimura-izuki',
+  'misuminene' => 'misumi-nene',
+  'imadahikari' => 'imada-hikaru',
+  'ogasawaranano' => 'ogasawara-nano',
+  'horikitamoa' => 'horikita-moea',
+  'seinosaki' => 'kiyono-saki',
+  'chibayuuka' => 'chiba-yuka',
+  'sakaimio' => 'sakai-mio',
+  'shiratorirei' => 'shiratori-rei',
+  'hayashimei' => 'hayashi-mei',
+  'minamikei' => 'minami-kyo',
+  'sanoakiho' => 'sano-akiho',
+  'koizumikaede' => 'koizumi-kaede',
+  'amanatsuyui' => 'amanatsu-yui',
+  'tamurakana' => 'tamura-kana',
+  'suzukinozomi' => 'suzuki-nozomi',
+  'hayasakakanon' => 'hayasaka-kanon',
+  'yamaishimaika' => 'yamaishi-maika',
+  'nanasetazune' => 'nanase-non',
+);
