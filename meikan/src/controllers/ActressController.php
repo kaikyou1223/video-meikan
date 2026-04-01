@@ -15,9 +15,13 @@ class ActressController
         $similarActresses = Actress::getSimilarActresses($actress['id']);
 
         // 似ている女優が空の場合、タグ+デビュー時期ベースの関連女優をフォールバック
+        // さらに関連女優も空なら逆引き（他女優のsimilar/relatedに含まれている）
         $relatedActresses = [];
         if (empty($similarActresses)) {
             $relatedActresses = Actress::getRelatedActresses($actress['id']);
+            if (empty($relatedActresses)) {
+                $relatedActresses = Actress::getReverseLookupActresses($actress['id']);
+            }
         }
 
         // 作品数が少なくジャンルが空の場合、作品リストを直接表示

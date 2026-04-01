@@ -84,6 +84,13 @@ foreach ($targets as $target) {
     foreach ($allActresses as $cid => $candidate) {
         if ($cid === $tid) continue;
 
+        // デビュー5年以内制約: 両者にデビュー日がある場合、5年以上離れていたらスキップ
+        $cDebut = $candidate['debut_date'] ? strtotime($candidate['debut_date']) : null;
+        if ($tDebut && $cDebut) {
+            $diffYears = abs($tDebut - $cDebut) / (365 * 86400);
+            if ($diffYears > 5) continue;
+        }
+
         $cGenres = $actressGenres[$cid] ?? [];
 
         // ジャンルタグ一致スコア（共通ジャンル数 / 最大ジャンル数）
@@ -96,7 +103,6 @@ foreach ($targets as $target) {
 
         // デビュー時期ボーナス（±6ヶ月以内で最大0.3加算）
         $debutBonus = 0.0;
-        $cDebut = $candidate['debut_date'] ? strtotime($candidate['debut_date']) : null;
         if ($tDebut && $cDebut) {
             $diffMonths = abs($tDebut - $cDebut) / (30 * 86400);
             if ($diffMonths <= 6) {

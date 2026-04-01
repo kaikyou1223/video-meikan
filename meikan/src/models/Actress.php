@@ -133,6 +133,41 @@ class Actress
     }
 
     /**
+     * 逆引き関連女優を取得
+     * 他の女優の similar_actresses / related_actresses に自分が含まれていれば、その女優を返す
+     */
+    public static function getReverseLookupActresses(int $actressId): array
+    {
+        $cacheKey = 'reverse_lookup_actresses_10_' . $actressId;
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) return $cached;
+
+        $db = Database::getInstance();
+
+        try {
+            // similar_actresses と related_actresses の両方を逆引きし、スコア降順で上位10件
+            $stmt = $db->prepare('
+                SELECT a.id, a.name, a.slug, a.thumbnail_url, t.score
+                FROM (
+                    SELECT actress_id AS ref_id, score FROM similar_actresses WHERE similar_actress_id = ?
+                    UNION ALL
+                    SELECT actress_id AS ref_id, score FROM related_actresses WHERE related_actress_id = ?
+                ) t
+                INNER JOIN actresses a ON t.ref_id = a.id
+                ORDER BY t.score DESC
+                LIMIT 10
+            ');
+            $stmt->execute([$actressId, $actressId]);
+            $result = $stmt->fetchAll();
+        } catch (\Throwable $e) {
+            $result = [];
+        }
+
+        Cache::set($cacheKey, $result);
+        return $result;
+    }
+
+    /**
      * 指定ジャンルの作品が多い女優を取得（サムネイルあり）
      */
     public static function findTopByGenre(string $genreSlug, int $limit = 6): array
