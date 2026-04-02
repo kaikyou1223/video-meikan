@@ -480,6 +480,59 @@ ul, ol { list-style: none; }
     text-decoration: underline;
 }
 
+/* --- Sidebar Similar Actresses --- */
+.sidebar-similar {
+    display: none;
+}
+.sidebar-similar__list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+.sidebar-similar__item {
+    display: block;
+    text-decoration: none;
+    color: var(--color-text);
+    text-align: center;
+}
+.sidebar-similar__item:hover {
+    opacity: 0.8;
+}
+.sidebar-similar__image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #E8E8EA;
+}
+.sidebar-similar__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.sidebar-similar__placeholder {
+    width: 100%;
+    height: 100%;
+    background: #E8E8EA;
+}
+.sidebar-similar__name {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 4px;
+    line-height: 1.3;
+}
+.sidebar-similar__age {
+    font-size: 0.7em;
+    font-weight: 400;
+}
+.sidebar-similar__meta {
+    display: block;
+    font-size: 11px;
+    color: var(--color-text-sub);
+}
+
 /* --- Work List --- */
 .work-list {
     display: flex;
@@ -1675,7 +1728,7 @@ p > .article-inline-img {
 .similar-inline__image {
     width: 110px;
     height: 110px;
-    border-radius: 50%;
+    border-radius: var(--radius);
     overflow: hidden;
     background: #E8E8EA;
 }
@@ -1697,7 +1750,7 @@ p > .article-inline-img {
     line-height: 1.3;
 }
 .similar-inline__age {
-    font-size: 0.85em;
+    font-size: 0.7em;
     font-weight: 400;
 }
 .similar-inline__size {
@@ -2380,6 +2433,12 @@ p > .article-inline-img {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+    }
+    .sidebar-similar {
+        display: block;
+    }
+    .page-layout ~ .similar-inline {
+        display: none;
     }
 }
 

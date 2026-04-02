@@ -1,5 +1,6 @@
 <?php
 $hasProfile = !empty($actress['bust']) || !empty($actress['height']) || !empty($actress['birthday']) || !empty($actress['blood_type']) || !empty($actress['hobby']) || !empty($actress['prefectures']);
+$recommendActresses = !empty($similarActresses) ? $similarActresses : (!empty($relatedActresses) ? $relatedActresses : []);
 ?>
 <div class="profile-section">
     <div class="profile-section__image">
@@ -112,6 +113,31 @@ $hasProfile = !empty($actress['bust']) || !empty($actress['height']) || !empty($
                 <span>単体作品のみ</span>
             </label>
         </div>
+
+        <?php if (!empty($recommendActresses)): ?>
+        <div class="sidebar-section sidebar-similar">
+            <h3 class="sidebar-section__title"><?= h($actress['name']) ?>が好きな人にオススメ</h3>
+            <ul class="sidebar-similar__list">
+                <?php foreach (array_slice($recommendActresses, 0, 6) as $rec): ?>
+                <li>
+                    <a href="<?= h(url($rec['slug'] . '/')) ?>" class="sidebar-similar__item">
+                        <div class="sidebar-similar__image">
+                            <?php if (!empty($rec['thumbnail_url'])): ?>
+                                <img src="<?= h($rec['thumbnail_url']) ?>" alt="<?= h($rec['name']) ?>" width="300" height="300" loading="lazy">
+                            <?php else: ?>
+                                <div class="sidebar-similar__placeholder"></div>
+                            <?php endif; ?>
+                        </div>
+                        <span class="sidebar-similar__name"><?= h($rec['name']) ?><?php if (!empty($rec['birthday'])): ?><span class="sidebar-similar__age">（<?= (new DateTime($rec['birthday']))->diff(new DateTime())->y ?>歳）</span><?php endif; ?></span>
+                        <?php if (!empty($rec['bust']) && !empty($rec['waist']) && !empty($rec['hip'])): ?>
+                            <span class="sidebar-similar__meta">B<?= (int)$rec['bust'] ?> W<?= (int)$rec['waist'] ?> H<?= (int)$rec['hip'] ?></span>
+                        <?php endif; ?>
+                    </a>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <?php endif; ?>
     </aside>
 
     <!-- オーバーレイ（SP用） -->
@@ -148,12 +174,9 @@ $hasProfile = !empty($actress['bust']) || !empty($actress['height']) || !empty($
 </div>
 <?php endif; ?>
 
-<?php
-$recommendActresses = !empty($similarActresses) ? $similarActresses : (!empty($relatedActresses) ? $relatedActresses : []);
-?>
 <?php if (!empty($recommendActresses)): ?>
 <div class="similar-inline">
-    <p class="similar-inline__title"><?= h($actress['name']) ?>が好きな人にはオススメの女優</p>
+    <p class="similar-inline__title"><?= h($actress['name']) ?>が好きな人にオススメ</p>
     <div class="similar-inline__scroll">
         <?php foreach ($recommendActresses as $rec): ?>
             <a href="<?= h(url($rec['slug'] . '/')) ?>" class="similar-inline__item">
