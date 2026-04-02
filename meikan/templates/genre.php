@@ -43,7 +43,10 @@
                                     <div class="similar-inline__placeholder"></div>
                                 <?php endif; ?>
                             </div>
-                            <span class="similar-inline__name"><?= h($similar['name']) ?></span>
+                            <span class="similar-inline__name"><?= h($similar['name']) ?><?php if (!empty($similar['birthday'])): ?><span class="similar-inline__age">（<?= (new DateTime($similar['birthday']))->diff(new DateTime())->y ?>歳）</span><?php endif; ?></span>
+                            <?php if (!empty($similar['bust']) && !empty($similar['waist']) && !empty($similar['hip'])): ?>
+                                <span class="similar-inline__size">B<?= (int)$similar['bust'] ?> W<?= (int)$similar['waist'] ?> H<?= (int)$similar['hip'] ?></span>
+                            <?php endif; ?>
                         </a>
                     <?php endforeach; ?>
                 </div>

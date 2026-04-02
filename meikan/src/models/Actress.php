@@ -86,7 +86,7 @@ class Actress
 
         $db = Database::getInstance();
         $stmt = $db->prepare('
-            SELECT a.id, a.name, a.slug, a.thumbnail_url, sa.score
+            SELECT a.id, a.name, a.slug, a.thumbnail_url, a.birthday, a.bust, a.waist, a.hip, sa.score
             FROM similar_actresses sa
             INNER JOIN actresses a ON sa.similar_actress_id = a.id
             WHERE sa.actress_id = ?
@@ -115,7 +115,7 @@ class Actress
         // テーブルが存在しない場合は空配列
         try {
             $stmt = $db->prepare('
-                SELECT a.id, a.name, a.slug, a.thumbnail_url, ra.score
+                SELECT a.id, a.name, a.slug, a.thumbnail_url, a.birthday, a.bust, a.waist, a.hip, ra.score
                 FROM related_actresses ra
                 INNER JOIN actresses a ON ra.related_actress_id = a.id
                 WHERE ra.actress_id = ?
@@ -147,7 +147,7 @@ class Actress
         try {
             // similar_actresses と related_actresses の両方を逆引きし、スコア降順で上位10件
             $stmt = $db->prepare('
-                SELECT a.id, a.name, a.slug, a.thumbnail_url, t.score
+                SELECT a.id, a.name, a.slug, a.thumbnail_url, a.birthday, a.bust, a.waist, a.hip, t.score
                 FROM (
                     SELECT actress_id AS ref_id, score FROM similar_actresses WHERE similar_actress_id = ?
                     UNION ALL

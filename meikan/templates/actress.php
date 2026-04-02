@@ -87,7 +87,10 @@ $recommendActresses = !empty($similarActresses) ? $similarActresses : (!empty($r
                         <div class="similar-inline__placeholder"></div>
                     <?php endif; ?>
                 </div>
-                <span class="similar-inline__name"><?= h($rec['name']) ?></span>
+                <span class="similar-inline__name"><?= h($rec['name']) ?><?php if (!empty($rec['birthday'])): ?><span class="similar-inline__age">（<?= (new DateTime($rec['birthday']))->diff(new DateTime())->y ?>歳）</span><?php endif; ?></span>
+                <?php if (!empty($rec['bust']) && !empty($rec['waist']) && !empty($rec['hip'])): ?>
+                    <span class="similar-inline__size">B<?= (int)$rec['bust'] ?> W<?= (int)$rec['waist'] ?> H<?= (int)$rec['hip'] ?></span>
+                <?php endif; ?>
             </a>
         <?php endforeach; ?>
     </div>
