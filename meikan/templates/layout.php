@@ -52,8 +52,9 @@
 
     <script>var BASE_URL = '<?= url() ?>';</script>
     <script src="<?= asset('js/app.js') ?>"></script>
-    <?php if (!empty($genre)): ?>
+    <?php if (!empty($genre) || !empty($works)): ?>
     <script src="<?= asset('js/genre.js') ?>"></script>
     <?php endif; ?>
+    <script src="<?= asset('js/carousel.js') ?>"></script>
 </body>
 </html>

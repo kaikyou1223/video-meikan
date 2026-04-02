@@ -9,9 +9,9 @@ class ApiController
         $actressId = (int)($_GET['actress_id'] ?? 0);
         $genreId = (int)($_GET['genre_id'] ?? 0);
 
-        if (!$actressId || !$genreId) {
+        if (!$actressId) {
             http_response_code(400);
-            echo json_encode(['error' => 'actress_id and genre_id are required']);
+            echo json_encode(['error' => 'actress_id is required']);
             return;
         }
 
@@ -29,17 +29,30 @@ class ApiController
             $vrFilter = '';
         }
 
-        $total = Work::searchCount($actressId, $genreId, $query, $singleOnly, $vrFilter);
-        $totalPages = max(1, (int)ceil($total / ITEMS_PER_PAGE));
-        $page = min($page, $totalPages);
-        $offset = ($page - 1) * ITEMS_PER_PAGE;
+        if ($genreId) {
+            // ジャンル指定あり（ジャンルページ）
+            $total = Work::searchCount($actressId, $genreId, $query, $singleOnly, $vrFilter);
+            $totalPages = max(1, (int)ceil($total / ITEMS_PER_PAGE));
+            $page = min($page, $totalPages);
+            $offset = ($page - 1) * ITEMS_PER_PAGE;
+            $works = Work::search($actressId, $genreId, $sort, $query, $singleOnly, $vrFilter, ITEMS_PER_PAGE, $offset);
+        } else {
+            // ジャンル指定なし（女優ページ）
+            $total = Work::searchCountByActress($actressId, $query, $singleOnly, $vrFilter);
+            $totalPages = max(1, (int)ceil($total / ITEMS_PER_PAGE));
+            $page = min($page, $totalPages);
+            $offset = ($page - 1) * ITEMS_PER_PAGE;
+            $works = Work::searchByActress($actressId, $sort, $query, $singleOnly, $vrFilter, ITEMS_PER_PAGE, $offset);
+        }
 
-        $works = Work::search($actressId, $genreId, $sort, $query, $singleOnly, $vrFilter, ITEMS_PER_PAGE, $offset);
+        // サンプル画像を一括取得
+        $workIds = array_column($works, 'id');
+        $workSampleImages = Work::getSampleImagesBulk($workIds);
 
-        // work-card-horizontal パーシャルでHTML生成
+        // work-card-v2 パーシャルでHTML生成
         ob_start();
         foreach ($works as $work) {
-            require TEMPLATE_DIR . '/partials/work-card-horizontal.php';
+            require TEMPLATE_DIR . '/partials/work-card-v2.php';
         }
         $html = ob_get_clean();
 

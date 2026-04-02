@@ -14,6 +14,7 @@ define('CACHE_DIR', ROOT_DIR . '/cache');
 define('LOG_DIR', ROOT_DIR . '/logs');
 
 define('ITEMS_PER_PAGE', 20);
+define('ACTRESS_WORK_THRESHOLD', 10); // この数以下の作品数ならジャンルページを作らない
 define('CACHE_TTL', 3600); // 1時間
 
 define('SLUG_PATTERN', '/^[a-z0-9][a-z0-9-]*$/');

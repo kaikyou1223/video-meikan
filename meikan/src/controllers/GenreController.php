@@ -11,6 +11,12 @@ class GenreController
             return;
         }
 
+        // 作品数が少ない女優はジャンルページを作らない → 女優ページへ301リダイレクト
+        if ((int)$actress['work_count'] <= ACTRESS_WORK_THRESHOLD) {
+            header('Location: ' . url($actress['slug'] . '/'), true, 301);
+            return;
+        }
+
         $genre = Genre::findBySlug($params['genre_slug']);
         if (!$genre) {
             http_response_code(404);
@@ -29,6 +35,9 @@ class GenreController
 
         $pagination = paginate($totalWorks, ITEMS_PER_PAGE, $page);
         $works = Work::findByActressAndGenre($actress['id'], $genre['id'], ITEMS_PER_PAGE, $pagination['offset']);
+        $workIds = array_column($works, 'id');
+        $workSampleImages = Work::getSampleImagesBulk($workIds);
+        $allGenres = Actress::getGenres($actress['id']);
         $similarActresses = Actress::getSimilarActresses($actress['id']);
 
         $jsonLd = [
@@ -59,8 +68,10 @@ class GenreController
             'actress' => $actress,
             'genre' => $genre,
             'works' => $works,
+            'workSampleImages' => $workSampleImages,
             'totalWorks' => $totalWorks,
             'pagination' => $pagination,
+            'allGenres' => $allGenres,
             'similarActresses' => $similarActresses,
             'jsonLd' => $jsonLd,
         ]);

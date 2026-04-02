@@ -11,7 +11,15 @@ class ActressController
             return;
         }
 
-        $genres = Actress::getGenres($actress['id']);
+        $workCount = (int)$actress['work_count'];
+        $isFewWorks = $workCount <= ACTRESS_WORK_THRESHOLD;
+
+        // 作品数が少ない場合はジャンル取得をスキップ
+        $genres = [];
+        if (!$isFewWorks) {
+            $genres = Actress::getGenres($actress['id']);
+        }
+
         $similarActresses = Actress::getSimilarActresses($actress['id']);
 
         // 似ている女優が空の場合、タグ+デビュー時期ベースの関連女優をフォールバック
@@ -24,31 +32,46 @@ class ActressController
             }
         }
 
-        // 作品数が少なくジャンルが空の場合、作品リストを直接表示
-        $works = [];
-        if (empty($genres)) {
-            $works = Work::findByActress($actress['id']);
-        }
+        // 作品一覧を表示（多い場合はページネーション付き）
+        $worksPage = currentPage();
+        $totalWorks = $workCount;
+        $worksPagination = paginate($totalWorks, ITEMS_PER_PAGE, $worksPage);
+        $works = Work::findByActressPaginated($actress['id'], ITEMS_PER_PAGE, $worksPagination['offset']);
+
+        // サンプル画像を一括取得
+        $workIds = array_column($works, 'id');
+        $workSampleImages = Work::getSampleImagesBulk($workIds);
 
         $jsonLd = [
             '@context' => 'https://schema.org',
             '@type' => 'ItemList',
             'name' => $actress['name'] . 'のジャンル別作品',
-            'numberOfItems' => count($genres),
+            'numberOfItems' => count($genres) ?: count($works),
             'itemListElement' => [],
         ];
 
-        foreach ($genres as $i => $genre) {
-            $jsonLd['itemListElement'][] = [
-                '@type' => 'ListItem',
-                'position' => $i + 1,
-                'name' => $genre['name'],
-                'url' => fullUrl($actress['slug'] . '/' . $genre['slug'] . '/'),
-            ];
+        if (!empty($genres)) {
+            foreach ($genres as $i => $genre) {
+                $jsonLd['itemListElement'][] = [
+                    '@type' => 'ListItem',
+                    'position' => $i + 1,
+                    'name' => $genre['name'],
+                    'url' => fullUrl($actress['slug'] . '/' . $genre['slug'] . '/'),
+                ];
+            }
+        } else {
+            foreach ($works as $i => $work) {
+                $jsonLd['itemListElement'][] = [
+                    '@type' => 'ListItem',
+                    'position' => $i + 1,
+                    'name' => $work['title'],
+                    'url' => $work['affiliate_url'] ?? '',
+                ];
+            }
         }
 
         $metaName = $actress['name'];
-        $metaWorkCount = (int)$actress['work_count'];
+        $metaWorkCount = $workCount;
         $metaAgePart = '';
         if (!empty($actress['birthday'])) {
             $metaAge = (new DateTime($actress['birthday']))->diff(new DateTime())->y;
@@ -71,6 +94,10 @@ class ActressController
             'actress' => $actress,
             'genres' => $genres,
             'works' => $works,
+            'workSampleImages' => $workSampleImages,
+            'totalWorks' => $totalWorks,
+            'worksPagination' => $worksPagination,
+            'isFewWorks' => $isFewWorks,
             'similarActresses' => $similarActresses,
             'relatedActresses' => $relatedActresses,
             'jsonLd' => $jsonLd,

@@ -73,6 +73,18 @@ foreach ($actresses as $actress) {
             $reviewCount = isset($item['review']['count']) ? (int)$item['review']['count'] : null;
             $reviewAverage = isset($item['review']['average']) ? (float)$item['review']['average'] : null;
 
+            // サンプル動画URL（最大サイズを優先）
+            $sampleMovieUrl = null;
+            if (!empty($item['sampleMovieURL'])) {
+                $movieSizes = ['size_720_480', 'size_644_414', 'size_560_360', 'size_476_306'];
+                foreach ($movieSizes as $size) {
+                    if (!empty($item['sampleMovieURL'][$size])) {
+                        $sampleMovieUrl = $item['sampleMovieURL'][$size];
+                        break;
+                    }
+                }
+            }
+
             if (!$workId) {
                 $thumbnail = '';
                 if (!empty($item['imageURL']['large'])) {
@@ -91,8 +103,8 @@ foreach ($actresses as $actress) {
                 }
 
                 $stmt = $db->prepare('
-                    INSERT INTO works (title, thumbnail_url, release_date, label, affiliate_url, review_count, review_average, source, source_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO works (title, thumbnail_url, release_date, label, affiliate_url, review_count, review_average, sample_movie_url, source, source_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ');
                 $stmt->execute([
                     $item['title'] ?? '',
@@ -102,16 +114,28 @@ foreach ($actresses as $actress) {
                     $affiliateUrl,
                     $reviewCount,
                     $reviewAverage,
+                    $sampleMovieUrl,
                     'fanza',
                     $sourceId,
                 ]);
                 $workId = $db->lastInsertId();
                 $totalFetched++;
             } else {
-                // 既存レコードのレビュー情報を更新
-                if ($reviewCount !== null || $reviewAverage !== null) {
-                    $db->prepare('UPDATE works SET review_count = ?, review_average = ? WHERE id = ?')
-                       ->execute([$reviewCount, $reviewAverage, $workId]);
+                // 既存レコードのレビュー・動画情報を更新
+                $db->prepare('UPDATE works SET review_count = COALESCE(?, review_count), review_average = COALESCE(?, review_average), sample_movie_url = COALESCE(?, sample_movie_url) WHERE id = ?')
+                   ->execute([$reviewCount, $reviewAverage, $sampleMovieUrl, $workId]);
+            }
+
+            // サンプル画像の保存
+            if (!empty($item['sampleImageURL']['sample_l']['image'])) {
+                $existingSamples = $db->prepare('SELECT COUNT(*) FROM work_sample_images WHERE work_id = ?');
+                $existingSamples->execute([$workId]);
+                if ((int)$existingSamples->fetchColumn() === 0) {
+                    $sampleImages = $item['sampleImageURL']['sample_l']['image'];
+                    $insertSample = $db->prepare('INSERT INTO work_sample_images (work_id, image_url, sort_order) VALUES (?, ?, ?)');
+                    foreach ($sampleImages as $sortOrder => $imageUrl) {
+                        $insertSample->execute([$workId, $imageUrl, $sortOrder]);
+                    }
                 }
             }
 

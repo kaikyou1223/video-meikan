@@ -39,9 +39,9 @@ class SitemapController
                 'priority' => '0.8',
             ];
 
-            // 女優の全ジャンルスラッグ取得
+            // 作品数が少ない女優はジャンルページを生成しない
             $actressObj = Actress::findBySlug($actress['slug']);
-            if ($actressObj) {
+            if ($actressObj && (int)$actressObj['work_count'] > ACTRESS_WORK_THRESHOLD) {
                 $genreSlugs = Genre::allSlugsForActress($actressObj['id']);
                 foreach ($genreSlugs as $genreSlug) {
                     $urls[] = [
