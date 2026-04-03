@@ -26,6 +26,7 @@ $batches = [
     'register_actresses.php',
     'fetch_actress_profiles.php',
     'fetch_fanza.php',
+    'validate_actress_works.php',  // fetch_fanza後にランダム抜き打ちチェック
     'assign_title_genres.php',
     'calculate_debut_dates.php',
     'calculate_similar_actresses.php',

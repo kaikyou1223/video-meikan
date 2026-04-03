@@ -6,6 +6,26 @@
 
 require_once __DIR__ . '/config.php';
 
+/**
+ * 女優名が一致するか判定（括弧内の別名も照合）
+ * fetch_actress_profiles.php と同じロジック
+ */
+function actressNameMatchesForWork(string $apiName, string $dbName): bool
+{
+    if ($apiName === $dbName) return true;
+
+    if (preg_match('/^(.+?)\s*（(.+?)）$/', $apiName, $m)) {
+        $mainName = trim($m[1]);
+        if ($mainName === $dbName) return true;
+
+        $aliases = preg_split('/[、,]\s*/', $m[2]);
+        foreach ($aliases as $alias) {
+            if (trim($alias) === $dbName) return true;
+        }
+    }
+    return false;
+}
+
 $apiId = getenv('FANZA_API_ID');
 $affiliateId = getenv('FANZA_AFFILIATE_ID');
 
@@ -139,9 +159,20 @@ foreach ($actresses as $actress) {
                 }
             }
 
-            // 女優×作品の紐付け
-            $db->prepare('INSERT IGNORE INTO actress_work (actress_id, work_id) VALUES (?, ?)')
-               ->execute([$actress['id'], $workId]);
+            // 女優×作品の紐付け（APIの出演者リストに含まれる場合のみ）
+            $actressFound = false;
+            if (!empty($item['iteminfo']['actress'])) {
+                foreach ($item['iteminfo']['actress'] as $actressInfo) {
+                    if (actressNameMatchesForWork($actressInfo['name'] ?? '', $actress['name'])) {
+                        $actressFound = true;
+                        break;
+                    }
+                }
+            }
+            if ($actressFound) {
+                $db->prepare('INSERT IGNORE INTO actress_work (actress_id, work_id) VALUES (?, ?)')
+                   ->execute([$actress['id'], $workId]);
+            }
 
             // ジャンル処理
             if (!empty($item['iteminfo']['genre'])) {
