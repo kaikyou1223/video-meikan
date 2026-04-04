@@ -1,5 +1,5 @@
 ---
-name: write-say-comments
+name: write-hakase-comment
 description: "AV女優記事の吹き出しコメント（:::say ブロック）を、av博士キャラクターで書く・書き直す。'吹き出し', 'sayブロック', 'av博士コメント', '吹き出し改善', 'sayコメント', 'av博士の一言'で発動。"
 metadata:
   version: 1.0.0

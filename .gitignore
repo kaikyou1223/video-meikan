@@ -10,5 +10,19 @@ meikan/cache/
 meikan/logs/
 meikan/batch/data/
 
+# 環境変数
+ga4/.env
+gsc/.env
+
+# レポートログ
+ga4/daily_report.log
+gsc/daily_report.log
+
+# スクリーンショット（一時ファイル）
+*.png
+
+# worktrees
+.claude/worktrees/
+
 # OS
 .DS_Store

@@ -1,5 +1,5 @@
 ---
-name: article-review
+name: review-article
 description: "記事を公開前にレビューする。画像URLの全件HTTPチェック＋ブラウザで代表ページをスクリーンショット確認。'記事レビュー', '記事確認', 'article review', '公開前チェック', 'NOW PRINTING確認'で発動。"
 metadata:
   version: 1.0.0

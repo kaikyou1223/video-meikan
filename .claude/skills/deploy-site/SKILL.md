@@ -1,5 +1,5 @@
 ---
-name: deploy
+name: deploy-site
 description: "av-hakase.com本番サーバーへのデプロイ。'デプロイ', '本番反映', '本番に上げて', 'deploy', 'push して', 'サーバーに反映' で発動。未コミットの変更がある場合はコミットしてからデプロイする。"
 ---
 
