@@ -263,7 +263,7 @@ updated_at: 2026-03-30
 
 [btn サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Dmiaa00490%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[takeuchi-natsuki]
+@actress[takeuchinatsuki]
 ### ⑩裏切ったアイドルを誘拐監禁。 顔中オス汁まみれの喉奥蹂躙イラマチオ調教 橘ひなの
 
 
@@ -455,7 +455,7 @@ updated_at: 2026-03-30
 
 [btn サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3D1piyo00088%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[matsumoto-ichika]
+@actress[ichika]
 ### 【脅迫×イラマチオ】進学したければ俺の喉ボコイラマを受け入れろ。-イラマチオ奴●いいなり制服美少女- 日泉舞香
 
 
@@ -483,7 +483,7 @@ updated_at: 2026-03-30
 
 [btn サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Dmiaa00464%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[hiizumi-maika]
+@actress[hiizumimaika]
 ### 【顔面崩壊×イラマチオ】顔面崩壊特化イラマチオ 雅子りな
 
 

@@ -143,7 +143,7 @@ updated_at: 2026-03-30
 
 [サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Dmudr00217%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[yura-kana]
+@actress[kana]
 ### ⑥えっ！？本当に？演技でしょ… 催●術教室
 
 ![催眠AVおすすめ](https://hpkenkyu.mixh.jp/wp-content/uploads/2024/04/IMG_7334.webp)
@@ -197,7 +197,7 @@ updated_at: 2026-03-30
 
 [サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Ddvaj00610%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[hiizumi-maika]
+@actress[hiizumimaika]
 ### ⑧じんかくそうさ洗脳催● 田中ねね
 
 
@@ -225,7 +225,7 @@ updated_at: 2026-03-30
 
 [サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Dsora00490%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[tanaka-nene]
+@actress[nene]
 ### ⑨hypno-document 催●術でキメられて 富井美帆
 
 
@@ -467,7 +467,7 @@ updated_at: 2026-03-30
 
 [サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Dvenu00374%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[kobayakawa-reiko]
+@actress[kobayakawareiko]
 ### 【放尿×催眠】the催● 鳴月らん
 
 

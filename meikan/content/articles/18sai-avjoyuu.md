@@ -622,7 +622,7 @@ Hカップのコスプレはたまらない。
 
 [btn サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3D1sdhs00040%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[yura-kana]
+@actress[kana]
 
 ### 綾瀬こころ（2022年デビュー）
 ![18歳AV女優](https://hpkenkyu.mixh.jp/wp-content/uploads/2024/12/ebod00923jp-8.webp)
@@ -734,7 +734,7 @@ DMをするだけでは我慢できなくなった夏月は、おじさんと会
 
 [btn サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Djufe00551%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[hoshino-natsuki]
+@actress[hoshinonatsuki]
 
 ### 姫野らん（2022年デビュー）
 ![18歳AV女優](https://hpkenkyu.mixh.jp/wp-content/uploads/2024/12/savr00261jp-4.webp)
@@ -789,7 +789,7 @@ JKのパンツを想像しながら作品を見てください。
 
 [btn サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Dh_1440fgan00090%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[himeno-ran]
+@actress[ran-2]
 
 ### 柏木こなつ（2021年デビュー）
 ![18歳AV女優](https://hpkenkyu.mixh.jp/wp-content/uploads/2024/12/13dsvr01103jp-8.webp)
@@ -844,7 +844,7 @@ JKのパンツを想像しながら作品を見てください。
 
 [btn サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Dh_1440fgan00089%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[kashiwagi-konatsu]
+@actress[konatsu]
 
 ### 森千里（2020年デビュー）
 ![18歳AV女優](https://hpkenkyu.mixh.jp/wp-content/uploads/2024/12/midv00136jp-4.webp)
@@ -1158,7 +1158,7 @@ AV作品だけじゃない石原希望の一面も見ることができますよ
 
 [btn サンプル動画を見る](https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Fdetail%2F%3D%2Fcid%3Dhmn00520%2F&af_id=sukebe7-003&ch=toolbar&ch_id=text)
 
-@actress[tsukino-kasumi]
+@actress[kasumi]
 
 ### 白川ゆず（2019年デビュー）
 ![18歳 AV](https://hpkenkyu.mixh.jp/wp-content/uploads/2024/04/スクリーンショット-2024-04-05-014305.webp)
