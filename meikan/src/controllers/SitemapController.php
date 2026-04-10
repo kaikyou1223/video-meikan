@@ -30,6 +30,23 @@ class SitemapController
             'priority' => '0.8',
         ];
 
+        // 個別記事（noindex除外）
+        $articles = ArticleController::allArticles();
+        foreach ($articles as $article) {
+            if (!empty($article['noindex'])) continue;
+            $urlEntry = [
+                'loc' => fullUrl('article/' . $article['slug'] . '/'),
+                'changefreq' => 'monthly',
+                'priority' => '0.7',
+            ];
+            if (!empty($article['updated_at'])) {
+                $urlEntry['lastmod'] = $article['updated_at'];
+            } elseif (!empty($article['published_at'])) {
+                $urlEntry['lastmod'] = $article['published_at'];
+            }
+            $urls[] = $urlEntry;
+        }
+
         // 女優ページ + ジャンルページ
         foreach ($actresses as $actress) {
             $urlEntry = [

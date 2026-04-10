@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /src/
+Disallow: /config/
+Disallow: /batch/
+Disallow: /logs/
+Disallow: /cache/
+Disallow: /sql/
+
+Sitemap: https://av-hakase.com/sitemap.xml
