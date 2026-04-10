@@ -51,11 +51,33 @@ class GenreController
         ];
 
         foreach ($works as $i => $work) {
+            $product = [
+                '@type' => 'Product',
+                'name' => $work['title'],
+                'sku' => $work['source_id'],
+            ];
+            if (!empty($work['thumbnail_url'])) {
+                $product['image'] = $work['thumbnail_url'];
+            }
+            if (!empty($work['affiliate_url'])) {
+                $product['offers'] = [
+                    '@type' => 'Offer',
+                    'url' => $work['affiliate_url'],
+                    'priceCurrency' => 'JPY',
+                    'availability' => 'https://schema.org/InStock',
+                ];
+            }
+            if (!empty($work['review_average']) && !empty($work['review_count'])) {
+                $product['aggregateRating'] = [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => round((float)$work['review_average'], 2),
+                    'reviewCount' => (int)$work['review_count'],
+                ];
+            }
             $jsonLd['itemListElement'][] = [
                 '@type' => 'ListItem',
                 'position' => $pagination['offset'] + $i + 1,
-                'name' => $work['title'],
-                'url' => $work['affiliate_url'] ?? '',
+                'item' => $product,
             ];
         }
 

@@ -32,12 +32,18 @@ class SitemapController
 
         // 女優ページ + ジャンルページ
         foreach ($actresses as $actress) {
-            $urls[] = [
+            $urlEntry = [
                 'loc' => fullUrl($actress['slug'] . '/'),
                 'lastmod' => date('Y-m-d', strtotime($actress['updated_at'])),
                 'changefreq' => 'weekly',
                 'priority' => '0.8',
             ];
+            if (!empty($actress['thumbnail_url'])) {
+                $urlEntry['images'] = [
+                    ['loc' => $actress['thumbnail_url'], 'title' => $actress['name']],
+                ];
+            }
+            $urls[] = $urlEntry;
 
             // 作品数が少ない女優はジャンルページを生成しない
             $actressObj = Actress::findBySlug($actress['slug']);

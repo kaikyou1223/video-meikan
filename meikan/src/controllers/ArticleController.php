@@ -59,7 +59,16 @@ class ArticleController
             ],
         ];
 
-        render('articles/show', [
+        if (!empty($article['image'])) {
+            $imgUrl = $article['image'];
+            $jsonLd['image'] = [
+                ['@type' => 'ImageObject', 'url' => $imgUrl, 'width' => 1200, 'height' => 675],  // 16:9
+                ['@type' => 'ImageObject', 'url' => $imgUrl, 'width' => 1200, 'height' => 900],  // 4:3
+                ['@type' => 'ImageObject', 'url' => $imgUrl, 'width' => 1200, 'height' => 1200], // 1:1
+            ];
+        }
+
+        $renderData = [
             'pageTitle' => $article['title'] . ' | ' . SITE_NAME,
             'metaDescription' => $article['description'],
             'noindex' => $article['noindex'],
@@ -72,7 +81,12 @@ class ArticleController
             'jsonLd' => $jsonLd,
             'article' => $article,
             'related' => $related,
-        ]);
+        ];
+        if (!empty($article['image'])) {
+            $renderData['ogImage'] = $article['image'];
+        }
+
+        render('articles/show', $renderData);
     }
 
     public static function allArticles(): array
@@ -120,6 +134,7 @@ class ArticleController
             'published_at' => $meta['published_at'] ?? '',
             'updated_at' => $meta['updated_at'] ?? '',
             'noindex' => ($meta['noindex'] ?? '') === 'true',
+            'image' => $meta['image'] ?? '',
         ];
 
         if ($includeBody) {
@@ -376,7 +391,7 @@ class ArticleController
                 }
                 if ($boxType === 'say') {
                     $out = '<div class="article-say">';
-                    $out .= '<div class="article-say__avatar"><img src="' . h(url('public/images/author-avatar.png')) . '" alt="av女優博士" loading="lazy"></div>';
+                    $out .= '<div class="article-say__avatar"><picture><source srcset="' . h(url('public/images/author-avatar.webp')) . '" type="image/webp"><img src="' . h(url('public/images/author-avatar.png')) . '" alt="av女優博士" loading="lazy"></picture></div>';
                     $out .= '<div class="article-say__bubble">';
                     foreach ($boxLines as $bl) {
                         $bl = trim($bl);

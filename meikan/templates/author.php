@@ -2,7 +2,7 @@
 
 <div class="author-profile">
     <div class="author-profile__header">
-        <div class="author-profile__avatar"><img src="<?= h(url('public/images/author-avatar.png')) ?>" alt="av博士" width="72" height="72" loading="lazy"></div>
+        <div class="author-profile__avatar"><picture><source srcset="<?= h(url('public/images/author-avatar.webp')) ?>" type="image/webp"><img src="<?= h(url('public/images/author-avatar.png')) ?>" alt="av博士" width="72" height="72" loading="lazy"></picture></div>
         <div class="author-profile__main">
             <h1 class="author-profile__name">av博士</h1>
             <p class="author-profile__tagline">月1万課金が止められない独身AVオタク</p>

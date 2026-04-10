@@ -42,8 +42,28 @@ class ActressController
         $workIds = array_column($works, 'id');
         $workSampleImages = Work::getSampleImagesBulk($workIds);
 
-        $jsonLd = [
-            '@context' => 'https://schema.org',
+        // Person スキーマ
+        $person = [
+            '@type' => 'Person',
+            'name' => $actress['name'],
+            'url' => fullUrl($actress['slug'] . '/'),
+        ];
+        if (!empty($actress['thumbnail_url'])) {
+            $person['image'] = $actress['thumbnail_url'];
+        }
+        if (!empty($actress['birthday'])) {
+            $person['birthDate'] = $actress['birthday'];
+        }
+        if (!empty($actress['height'])) {
+            $person['height'] = [
+                '@type' => 'QuantitativeValue',
+                'value' => (int)$actress['height'],
+                'unitCode' => 'CMT',
+            ];
+        }
+
+        // ItemList スキーマ
+        $itemList = [
             '@type' => 'ItemList',
             'name' => $actress['name'] . 'のジャンル別作品',
             'numberOfItems' => count($genres) ?: count($works),
@@ -52,7 +72,7 @@ class ActressController
 
         if (!empty($genres)) {
             foreach ($genres as $i => $genre) {
-                $jsonLd['itemListElement'][] = [
+                $itemList['itemListElement'][] = [
                     '@type' => 'ListItem',
                     'position' => $i + 1,
                     'name' => $genre['name'],
@@ -61,14 +81,41 @@ class ActressController
             }
         } else {
             foreach ($works as $i => $work) {
-                $jsonLd['itemListElement'][] = [
+                $product = [
+                    '@type' => 'Product',
+                    'name' => $work['title'],
+                    'sku' => $work['source_id'],
+                ];
+                if (!empty($work['thumbnail_url'])) {
+                    $product['image'] = $work['thumbnail_url'];
+                }
+                if (!empty($work['affiliate_url'])) {
+                    $product['offers'] = [
+                        '@type' => 'Offer',
+                        'url' => $work['affiliate_url'],
+                        'priceCurrency' => 'JPY',
+                        'availability' => 'https://schema.org/InStock',
+                    ];
+                }
+                if (!empty($work['review_average']) && !empty($work['review_count'])) {
+                    $product['aggregateRating'] = [
+                        '@type' => 'AggregateRating',
+                        'ratingValue' => round((float)$work['review_average'], 2),
+                        'reviewCount' => (int)$work['review_count'],
+                    ];
+                }
+                $itemList['itemListElement'][] = [
                     '@type' => 'ListItem',
                     'position' => $i + 1,
-                    'name' => $work['title'],
-                    'url' => $work['affiliate_url'] ?? '',
+                    'item' => $product,
                 ];
             }
         }
+
+        $jsonLd = [
+            '@context' => 'https://schema.org',
+            '@graph' => [$person, $itemList],
+        ];
 
         $metaName = $actress['name'];
         $metaWorkCount = $workCount;

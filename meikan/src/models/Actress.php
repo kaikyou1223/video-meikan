@@ -225,7 +225,7 @@ class Actress
     public static function allForSitemap(): array
     {
         $db = Database::getInstance();
-        return $db->query('SELECT slug, updated_at FROM actresses ORDER BY id')->fetchAll();
+        return $db->query('SELECT slug, name, thumbnail_url, updated_at FROM actresses ORDER BY id')->fetchAll();
     }
 
     /**

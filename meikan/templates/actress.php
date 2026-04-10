@@ -5,7 +5,7 @@ $recommendActresses = !empty($similarActresses) ? $similarActresses : (!empty($r
 <div class="profile-section">
     <div class="profile-section__image">
         <?php if (!empty($actress['thumbnail_url'])): ?>
-            <img src="<?= h($actress['thumbnail_url']) ?>" alt="<?= h($actress['name']) ?>" width="300" height="300">
+            <img src="<?= h($actress['thumbnail_url']) ?>" alt="<?= h($actress['name']) ?>" width="300" height="300" fetchpriority="high">
         <?php else: ?>
             <div class="profile-section__placeholder"></div>
         <?php endif; ?>
@@ -44,7 +44,7 @@ $recommendActresses = !empty($similarActresses) ? $similarActresses : (!empty($r
 
 <?php if (!empty($actress['comment'])): ?>
 <div class="hakase-comment">
-    <div class="hakase-comment__icon"><img src="<?= h(url('public/images/author-avatar.png')) ?>" alt="av女優博士" width="48" height="48" loading="lazy"></div>
+    <div class="hakase-comment__icon"><picture><source srcset="<?= h(url('public/images/author-avatar.webp')) ?>" type="image/webp"><img src="<?= h(url('public/images/author-avatar.png')) ?>" alt="av女優博士" width="48" height="48" loading="lazy"></picture></div>
     <div class="hakase-comment__body">
         <span class="hakase-comment__label">AV博士のコメント</span>
         <div class="hakase-comment__text"><p><?= nl2br(h($actress['comment'])) ?></p></div>
