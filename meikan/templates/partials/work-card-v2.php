@@ -64,16 +64,18 @@ $hasCarousel = $totalSlides > 1;
         <?php if (!empty($work['label'])): ?>
             <p class="work-card-v2__description"><?= h($work['label']) ?></p>
         <?php endif; ?>
-        <?php if (!empty($work['review_average']) && !empty($work['review_count'])): ?>
-        <div class="work-card-v2__rating">
-            <span class="work-card-v2__stars" style="--rating: <?= number_format((float)$work['review_average'], 1) ?>;">★★★★★</span>
-            <span class="work-card-v2__review-score"><?= number_format((float)$work['review_average'], 2) ?></span>
-            <span class="work-card-v2__review-count">(<?= (int)$work['review_count'] ?>件)</span>
+        <div class="work-card-v2__meta">
+            <?php if (!empty($work['review_average']) && !empty($work['review_count'])): ?>
+            <div class="work-card-v2__rating">
+                <span class="work-card-v2__stars" style="--rating: <?= number_format((float)$work['review_average'], 1) ?>;">★★★★★</span>
+                <span class="work-card-v2__review-score"><?= number_format((float)$work['review_average'], 2) ?></span>
+                <span class="work-card-v2__review-count">(<?= (int)$work['review_count'] ?>件)</span>
+            </div>
+            <?php endif; ?>
+            <?php if (!empty($work['release_date'])): ?>
+                <p class="work-card-v2__date"><?= h($work['release_date']) ?></p>
+            <?php endif; ?>
         </div>
-        <?php endif; ?>
-        <?php if (!empty($work['release_date'])): ?>
-            <p class="work-card-v2__date">配信開始日：<?= h($work['release_date']) ?></p>
-        <?php endif; ?>
         <?php if (!empty($work['price']) && !empty($work['list_price']) && (int)$work['price'] < (int)$work['list_price']): ?>
         <div class="work-card-v2__sale">
             <?php $discountRate = round((1 - (int)$work['price'] / (int)$work['list_price']) * 100); ?>

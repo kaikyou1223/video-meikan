@@ -9,8 +9,9 @@
     --color-card: #F5F5F7;
     --color-text: #1A1A1E;
     --color-text-sub: #6B6B70;
-    --color-accent: #1a5eb8;
-    --color-accent-hover: #1447a0;
+    --color-link: #1a5eb8;
+    --color-accent: #e91e8c;
+    --color-accent-hover: #c4177a;
     --color-border: #E5E5E7;
     --color-header-bg: #0d1f3c;
     --color-header-text: #ffffff;
@@ -52,7 +53,7 @@ body {
     display: flex;
     flex-direction: column;
 }
-a { color: var(--color-accent); text-decoration: underline; }
+a { color: var(--color-link); text-decoration: underline; }
 img { max-width: 100%; height: auto; display: block; }
 ul, ol { list-style: none; }
 
@@ -192,7 +193,7 @@ ul, ol { list-style: none; }
     align-items: center;
     gap: 4px;
 }
-.breadcrumb__link { color: var(--color-accent); }
+.breadcrumb__link { color: var(--color-link); }
 .breadcrumb__sep {
     color: var(--color-text-sub);
 }
@@ -476,7 +477,7 @@ ul, ol { list-style: none; }
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: var(--color-accent);
+    color: var(--color-link);
 }
 .genre-card__count {
     font-size: 11px;
@@ -2329,7 +2330,7 @@ p > .article-inline-img {
     align-items: center;
     padding: 6px 10px;
     border-radius: 6px;
-    color: var(--color-accent);
+    color: var(--color-link);
     text-decoration: underline;
     font-size: 13px;
     transition: none;
@@ -2337,11 +2338,11 @@ p > .article-inline-img {
 .sidebar-section__link:hover { background: transparent; }
 .sidebar-section__link.is-active {
     background: transparent;
-    color: var(--color-danger);
+    color: var(--color-accent);
     font-weight: 700;
 }
 .sidebar-section__link.is-active .sidebar-section__count {
-    color: var(--color-danger);
+    color: var(--color-accent);
 }
 .sidebar-section__count {
     font-size: 12px;
@@ -2426,7 +2427,7 @@ p > .article-inline-img {
     border-right: none;
     padding: 5px 12px;
     font-size: 13px;
-    color: var(--color-accent);
+    color: var(--color-link);
     cursor: pointer;
     white-space: nowrap;
     transition: none;
@@ -2638,27 +2639,33 @@ p > .article-inline-img {
 
 /* Info: 作品名 → 説明 → レビュー → 配信日 → ボタン */
 .work-card-v2__info {
-    padding: 14px 16px 16px;
+    padding: 8px 12px 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 .work-card-v2__title {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
-    line-height: 1.5;
+    line-height: 1.4;
     margin-bottom: 0;
 }
 .work-card-v2__description {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--color-text-sub);
-    line-height: 1.5;
+    line-height: 1.4;
+}
+.work-card-v2__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 .work-card-v2__rating {
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 13px;
+    font-size: 12px;
 }
 .work-card-v2__stars {
     background: linear-gradient(90deg, var(--color-accent) calc(var(--rating) / 5 * 100%), #ccc calc(var(--rating) / 5 * 100%));
@@ -2675,24 +2682,24 @@ p > .article-inline-img {
     color: var(--color-text-sub);
 }
 .work-card-v2__date {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--color-text-sub);
 }
 .work-card-v2__sale {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     align-self: center;
-    margin-top: 4px;
+    margin-top: 0;
 }
 .work-card-v2__sale-badge {
     display: inline-block;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
     color: #fff;
     background: #e53935;
     border-radius: 6px;
-    padding: 6px 16px;
+    padding: 3px 10px;
     line-height: 1.4;
     letter-spacing: 0.02em;
 }
@@ -2713,12 +2720,12 @@ p > .article-inline-img {
     color: #FFFFFF;
     background: var(--color-accent);
     border-radius: 6px;
-    padding: 10px 24px;
+    padding: 8px 24px;
     text-align: center;
     text-decoration: none;
     transition: background 0.2s;
     align-self: center;
-    margin-top: 4px;
+    margin-top: 0;
 }
 .work-card-v2__cta:hover {
     background: var(--color-accent-hover);
