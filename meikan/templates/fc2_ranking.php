@@ -1,7 +1,12 @@
 <div class="fc2-ranking">
     <div class="fc2-ranking__header">
-        <h1 class="page-title">FC2人気ランキング</h1>
-        <p class="page-description">ユーザー投票で決まるFC2コンテンツの人気ランキング</p>
+        <h1 class="page-title"><?= date('Y') ?>年最新！FC2おすすめの7桁ランキング</h1>
+        <p class="page-description">ユーザー投票で決まるFC2 7桁の数字おすすめランキング</p>
+    </div>
+
+    <div class="fc2-about">
+        <h2 class="fc2-about__title">FC2 おすすめの7桁とは？</h2>
+        <p class="fc2-about__text">FC2 PPVの動画は「1234567」のような<strong>7桁の数字（CID）</strong>で管理されています。このページでは、ユーザー投票で人気の高いFC2 7桁の数字おすすめ作品をランキング形式で紹介。FC2 7桁のおすすめを探している方はぜひ参考にしてください。</p>
     </div>
 
     <div class="fc2-ranking__toolbar">

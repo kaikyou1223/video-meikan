@@ -26,8 +26,8 @@ class Fc2RankingController
 
         render('fc2_ranking', [
             'fc2Page'         => true,
-            'pageTitle'       => 'FC2人気ランキング | ' . SITE_NAME,
-            'metaDescription' => 'ユーザー投票で決まるFC2コンテンツの人気ランキング。好きな作品に投票しよう。',
+            'pageTitle'       => date('Y') . '年最新！FC2おすすめの7桁ランキング | ' . SITE_NAME,
+            'metaDescription' => date('Y') . '年最新のFC2 7桁の数字おすすめランキング。ユーザー投票で選ばれた人気のFC2作品（7桁CID）を紹介。fc2 おすすめの7桁を探している方はこのページで確認できます。',
             'breadcrumbs'     => [
                 ['label' => 'TOP', 'url' => ''],
                 ['label' => 'FC2ランキング', 'url' => ''],
