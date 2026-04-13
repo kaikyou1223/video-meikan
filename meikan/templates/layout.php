@@ -9,6 +9,17 @@
       gtag('js', new Date());
       gtag('config', 'G-XP1BJTKX3S');
     </script>
+    <script>
+      document.addEventListener('click', function(e) {
+        var link = e.target.closest('a[data-fanza-cid]');
+        if (!link || typeof gtag === 'undefined') return;
+        gtag('event', 'fanza_click', {
+          item_id: link.dataset.fanzaCid,
+          item_category: link.dataset.fanzaCategory,
+          link_type: link.dataset.fanzaLinkType
+        });
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= h($pageTitle ?? SITE_TITLE . ' | ' . SITE_NAME) ?></title>
