@@ -86,4 +86,11 @@ return array (
   'tokita-ami' => 'tokitaami',
   'yuuki-nono' => 'nono',
   'kira-rin' => 'rin-2',
+  // 同一人物・重複登録リダイレクト
+  'kawakitasaika' => 'kawakita-saika',          // 河北彩伽 → 河北彩花
+  'mitaniakanemitaniakari' => 'mitani-akari',   // 美谷朱音（旧壊れslug）→ 美谷朱里
+  'mitani-akane' => 'mitani-akari',             // 美谷朱音（修正後slug）→ 美谷朱里
+  'meguri' => 'fujiura-megu',                   // めぐり → 藤浦めぐ
+  'morishitamio' => 'saionjimio',               // 森下美緒 → 西園寺美緒
+  'aya-2' => 'yamagishi-aika',                  // 山岸あや花 → 山岸逢花
 );
