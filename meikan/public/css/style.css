@@ -2766,6 +2766,17 @@ p > .article-inline-img {
     background: var(--color-accent-hover);
 }
 
+/* SP: ボタンを幅広に */
+@media (max-width: 767px) {
+    .work-card-v2__cta {
+        display: block;
+        width: 100%;
+        font-size: 16px;
+        padding: 14px 24px;
+        border-radius: 8px;
+    }
+}
+
 /* PC: カードスタイル拡大 */
 @media (min-width: 768px) {
     .work-card-v2__title {
