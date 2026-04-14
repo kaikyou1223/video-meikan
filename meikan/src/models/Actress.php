@@ -74,8 +74,22 @@ class Actress
 
     public static function count(): int
     {
+        $cacheKey = 'actresses_count';
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) return (int)$cached;
+
         $db = Database::getInstance();
-        return (int)$db->query('SELECT COUNT(*) FROM actresses')->fetchColumn();
+        $result = (int)$db->query('
+            SELECT COUNT(*)
+            FROM actresses
+            WHERE thumbnail_url IS NOT NULL
+              AND thumbnail_url != ""
+              AND thumbnail_url NOT LIKE "%/digital/video/%"
+              AND thumbnail_url NOT LIKE "%now_printing%"
+        ')->fetchColumn();
+
+        Cache::set($cacheKey, $result, 86400 * 30);
+        return $result;
     }
 
     public static function getSimilarActresses(int $actressId): array
@@ -234,6 +248,10 @@ class Actress
      */
     public static function findByDebutMonth(string $yearMonth): array
     {
+        $cacheKey = 'actresses_debut_month_' . $yearMonth;
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) return $cached;
+
         $db = Database::getInstance();
         $stmt = $db->prepare('
             SELECT a.*, COUNT(aw.work_id) AS work_count
@@ -244,7 +262,10 @@ class Actress
             ORDER BY a.debut_date ASC, a.name ASC
         ');
         $stmt->execute([$yearMonth]);
-        return $stmt->fetchAll();
+        $result = $stmt->fetchAll();
+
+        Cache::set($cacheKey, $result, 3600);
+        return $result;
     }
 
     /**

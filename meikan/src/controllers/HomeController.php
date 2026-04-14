@@ -62,7 +62,7 @@ class HomeController
             'description' => SITE_DESCRIPTION,
         ];
 
-        $actressCount = count(Actress::all());
+        $actressCount = Actress::count();
 
         render('home', [
             'pageTitle' => SITE_NAME . ' | ' . SITE_DESCRIPTION,

@@ -7,3 +7,5 @@
         <?php require TEMPLATE_DIR . '/partials/actress-card.php'; ?>
     <?php endforeach; ?>
 </div>
+
+<?php require TEMPLATE_DIR . '/partials/pagination.php'; ?>
