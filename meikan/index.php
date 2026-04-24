@@ -12,6 +12,13 @@ if (preg_match('#^/articles/(.*)$#', $uri, $m)) {
     exit;
 }
 
+// /fc2/ → / にリダイレクト
+if (preg_match('#^/fc2/$#', $uri)) {
+    $qs = $_SERVER['QUERY_STRING'] ?? '';
+    header('Location: /' . ($qs !== '' ? '?' . $qs : ''), true, 301);
+    exit;
+}
+
 // スラグ変更リダイレクト: 旧女優slug → 新slug
 $slugRedirectFile = __DIR__ . '/config/slug_redirects.php';
 if (file_exists($slugRedirectFile)) {
@@ -58,11 +65,10 @@ $router->add('author/', 'AuthorController@show');
 
 // DB系ルート（DB接続可能な場合のみ）
 if ($dbAvailable) {
-    $router->add('', 'HomeController@index');
+    $router->add('', 'Fc2RankingController@index');
     $router->add('meikan/', 'TopController@index');
     $router->add('api/works/', 'ApiController@works');
     $router->add('sitemap.xml', 'SitemapController@index');
-    $router->add('fc2/', 'Fc2RankingController@index');
     $router->add('fc2/submit/', 'Fc2RankingController@submit');
     $router->add('fc2/vote/', 'Fc2RankingController@vote');
     $router->add('{actress_slug}/', 'ActressController@show');
