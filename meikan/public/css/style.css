@@ -2986,16 +2986,35 @@ p > .article-inline-img {
     color: var(--color-accent);
 }
 
-/* お気に入り */
-.fc2-fav-btn.is-faved {
-    color: #f5a623;
-    border-color: #f5a623;
-}
-
 /* コピー */
 .fc2-copy-btn.is-copied {
     color: #4caf50;
     border-color: #4caf50;
+}
+
+/* --- トースト --- */
+.fc2-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 32px;
+    transform: translate(-50%, 16px);
+    background: rgba(30, 30, 30, 0.92);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 9999;
+    max-width: calc(100% - 32px);
+    text-align: center;
+}
+.fc2-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
 }
 
 /* いいね（投票） */

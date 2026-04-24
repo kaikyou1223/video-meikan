@@ -1,5 +1,26 @@
-// FC2 ランキング: 投票・コピー・お気に入り
+// FC2 ランキング: 投票・コピー
 document.addEventListener('DOMContentLoaded', function () {
+
+    // --- トースト ---
+    var toastEl = null;
+    var toastTimer = null;
+
+    function showToast(message) {
+        if (!toastEl) {
+            toastEl = document.createElement('div');
+            toastEl.className = 'fc2-toast';
+            document.body.appendChild(toastEl);
+        }
+        toastEl.textContent = message;
+        // reflow させて transition を効かせる
+        void toastEl.offsetWidth;
+        toastEl.classList.add('is-visible');
+
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+            toastEl.classList.remove('is-visible');
+        }, 1800);
+    }
 
     // --- いいね（投票）---
     document.querySelectorAll('.fc2-vote-btn').forEach(function (btn) {
@@ -46,44 +67,12 @@ document.addEventListener('DOMContentLoaded', function () {
             navigator.clipboard.writeText(cid).then(function () {
                 btn.classList.add('is-copied');
                 btn.title = 'コピーしました';
+                showToast('クリップボードにコピーしました！');
                 setTimeout(function () {
                     btn.classList.remove('is-copied');
                     btn.title = '番号をコピー';
                 }, 1500);
             });
-        });
-    });
-
-    // --- お気に入り（localStorage）---
-    var FAV_KEY = 'fc2_favorites';
-
-    function getFavs() {
-        try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch (e) { return []; }
-    }
-    function saveFavs(favs) {
-        localStorage.setItem(FAV_KEY, JSON.stringify(favs));
-    }
-
-    document.querySelectorAll('.fc2-fav-btn').forEach(function (btn) {
-        var cid = btn.dataset.cid;
-        if (getFavs().indexOf(cid) !== -1) {
-            btn.classList.add('is-faved');
-            btn.innerHTML = '&#x2605;'; // ★
-        }
-
-        btn.addEventListener('click', function () {
-            var favs = getFavs();
-            var idx  = favs.indexOf(cid);
-            if (idx === -1) {
-                favs.push(cid);
-                btn.classList.add('is-faved');
-                btn.innerHTML = '&#x2605;';
-            } else {
-                favs.splice(idx, 1);
-                btn.classList.remove('is-faved');
-                btn.innerHTML = '&#x2606;';
-            }
-            saveFavs(favs);
         });
     });
 });

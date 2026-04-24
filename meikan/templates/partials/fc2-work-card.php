@@ -18,7 +18,6 @@
         </a>
         <div class="fc2-work-card__actions">
             <span class="fc2-work-card__vote-count"><?= (int)$work['vote_count'] ?>票</span>
-            <button class="fc2-action-btn fc2-fav-btn" data-cid="<?= h($work['cid']) ?>" aria-label="お気に入り" title="お気に入り">&#x2606;</button>
             <button class="fc2-action-btn fc2-copy-btn" data-cid="<?= h($work['cid']) ?>" aria-label="番号をコピー" title="番号をコピー">&#x1F4CB;</button>
             <button class="fc2-action-btn fc2-vote-btn<?= $voted ? ' is-voted' : '' ?>" data-work-id="<?= (int)$work['id'] ?>" <?= $voted ? 'disabled' : '' ?> aria-label="いいね" title="いいね">&#x1F44D;</button>
         </div>
