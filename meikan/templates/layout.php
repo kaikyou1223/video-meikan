@@ -14,8 +14,7 @@
         var link = e.target.closest('a[data-fanza-cid]');
         if (!link || typeof gtag === 'undefined') return;
         gtag('event', 'fanza_click', {
-          item_id: link.dataset.fanzaCid,
-          item_category: link.dataset.fanzaCategory,
+          fanza_cid: link.dataset.fanzaCid,
           link_type: link.dataset.fanzaLinkType
         });
       });

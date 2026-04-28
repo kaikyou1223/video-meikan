@@ -734,7 +734,7 @@ class ArticleController
         if (!$work) {
             self::$lastWorkUrl = $affiliateUrl;
             $html = '<div class="embed-card embed-card--work">';
-            $html .= '<a href="' . h($affiliateUrl) . '" target="_blank" rel="nofollow noopener" class="embed-card__inner embed-card__inner--work" data-fanza-cid="' . h($sourceId) . '" data-fanza-category="videoa" data-fanza-link-type="card">';
+            $html .= '<a href="' . h($affiliateUrl) . '" target="_blank" rel="nofollow noopener" class="embed-card__inner embed-card__inner--work" data-fanza-cid="' . h($sourceId) . '" data-fanza-link-type="card">';
             $html .= '<div class="embed-card__image embed-card__image--work"><img src="' . h($fallbackThumb) . '" alt="' . h($linkText ?: $sourceId) . '" loading="lazy"' . $onerror . '></div>';
             $html .= '<p class="embed-card__title embed-card__title--work">' . h($linkText ?: $sourceId) . '</p>';
             $html .= '</a></div>' . "\n";
@@ -747,7 +747,7 @@ class ArticleController
         self::$lastWorkUrl = $url;
 
         $html = '<div class="embed-card embed-card--work">';
-        $html .= '<a href="' . h($url) . '" target="_blank" rel="nofollow noopener" class="embed-card__inner embed-card__inner--work" data-fanza-cid="' . h($sourceId) . '" data-fanza-category="videoa" data-fanza-link-type="card">';
+        $html .= '<a href="' . h($url) . '" target="_blank" rel="nofollow noopener" class="embed-card__inner embed-card__inner--work" data-fanza-cid="' . h($sourceId) . '" data-fanza-link-type="card">';
         $html .= '<div class="embed-card__image embed-card__image--work"><img src="' . $thumb . '" alt="' . $title . '" loading="lazy"' . $onerror . '></div>';
         $html .= '<p class="embed-card__title embed-card__title--work">' . $title . '</p>';
         $html .= '</a></div>' . "\n";
