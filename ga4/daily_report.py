@@ -55,6 +55,28 @@ def fetch_daily(client, date_range, dimension_filter=None):
     return response.get("rows", [])
 
 
+def fetch_event_count_daily(client, date_range, event_name):
+    body = {
+        "dateRanges": [date_range],
+        "dimensions": [{"name": "date"}],
+        "metrics": [{"name": "eventCount"}],
+        "dimensionFilter": {
+            "filter": {
+                "fieldName": "eventName",
+                "stringFilter": {"matchType": "EXACT", "value": event_name},
+            }
+        },
+        "orderBys": [{"dimension": {"dimensionName": "date"}}],
+    }
+    response = client.properties().runReport(
+        property=f"properties/{PROPERTY_ID}", body=body
+    ).execute()
+    return {
+        row["dimensionValues"][0]["value"]: int(row["metricValues"][0]["value"])
+        for row in response.get("rows", [])
+    }
+
+
 def rows_to_dict(rows):
     data = {}
     for row in rows:
@@ -81,7 +103,7 @@ def fmt_duration(seconds):
     return f"{m}:{s:02d}"
 
 
-def create_chart(all_dates, article_data, db_data):
+def create_chart(all_dates, article_data, db_data, click_data):
     empty = {"avg_duration": 0, "pages_per_session": 0, "sessions": 0}
 
     dates = [datetime.strptime(d, "%Y%m%d") for d in all_dates]
@@ -112,13 +134,21 @@ def create_chart(all_dates, article_data, db_data):
     ax.legend(loc="upper left")
     ax.grid(True, alpha=0.3)
 
-    # 3) セッション数（積み上げ棒）
+    # 3) セッション数（積み上げ棒）+ FANZAクリック（折れ線・右軸）
     ax = axes[2]
     ax.bar(dates, a_sess, color="#e74c3c", alpha=0.7, label="記事経由", width=0.8)
     ax.bar(dates, b_sess, bottom=a_sess, color="#3498db", alpha=0.7, label="DB経由", width=0.8)
     ax.set_ylabel("セッション数")
-    ax.legend(loc="upper left")
     ax.grid(True, alpha=0.3)
+
+    ax2 = ax.twinx()
+    clicks = [click_data.get(d, 0) for d in all_dates]
+    ax2.plot(dates, clicks, "s-", color="#2ecc71", label="FANZAクリック", markersize=4, linewidth=1.5)
+    ax2.set_ylabel("FANZAクリック数")
+
+    h1, l1 = ax.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+    ax.legend(h1 + h2, l1 + l2, loc="upper left")
 
     axes[2].xaxis.set_major_formatter(mdates.DateFormatter("%m/%d"))
     axes[2].xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))
@@ -131,19 +161,21 @@ def create_chart(all_dates, article_data, db_data):
     return path
 
 
-def post_to_slack(image_path, all_dates, article_data, db_data):
+def post_to_slack(image_path, all_dates, article_data, db_data, click_data):
     if not SLACK_BOT_TOKEN or not SLACK_CHANNEL:
         print("SLACK_BOT_TOKEN / SLACK_CHANNEL が未設定。Slack投稿をスキップ。")
         return
 
     a_dur, a_pps, a_sess = summarize(article_data)
     b_dur, b_pps, b_sess = summarize(db_data)
+    total_clicks = sum(click_data.values())
 
     period = f"{all_dates[0][:4]}/{all_dates[0][4:6]}/{all_dates[0][6:]} 〜 {all_dates[-1][:4]}/{all_dates[-1][4:6]}/{all_dates[-1][6:]}"
     comment = (
         f"*GA4日次レポート* ({period})\n\n"
         f"*記事経由* — セッション: {a_sess:,} / 滞在: {fmt_duration(a_dur)} / ページ/S: {a_pps:.2f}\n"
-        f"*DB経由* — セッション: {b_sess:,} / 滞在: {fmt_duration(b_dur)} / ページ/S: {b_pps:.2f}"
+        f"*DB経由* — セッション: {b_sess:,} / 滞在: {fmt_duration(b_dur)} / ページ/S: {b_pps:.2f}\n"
+        f"*FANZAクリック* — 合計: {total_clicks:,}"
     )
 
     client = WebClient(token=SLACK_BOT_TOKEN)
@@ -178,18 +210,19 @@ def main():
     print("データ取得中...")
     article_data = rows_to_dict(fetch_daily(client, date_range, article_filter))
     db_data = rows_to_dict(fetch_daily(client, date_range, db_filter))
+    click_data = fetch_event_count_daily(client, date_range, "fanza_click")
 
     all_dates = sorted(set(list(article_data.keys()) + list(db_data.keys())))
     if not all_dates:
         print("データなし")
         return
 
-    print(f"取得日数: {len(all_dates)}日")
+    print(f"取得日数: {len(all_dates)}日 / FANZAクリック: {sum(click_data.values()):,}件")
 
-    image_path = create_chart(all_dates, article_data, db_data)
+    image_path = create_chart(all_dates, article_data, db_data, click_data)
     print(f"グラフ生成: {image_path}")
 
-    post_to_slack(image_path, all_dates, article_data, db_data)
+    post_to_slack(image_path, all_dates, article_data, db_data, click_data)
 
 
 if __name__ == "__main__":
