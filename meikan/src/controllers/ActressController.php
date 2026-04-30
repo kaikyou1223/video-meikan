@@ -119,20 +119,35 @@ class ActressController
 
         $metaName = $actress['name'];
         $metaWorkCount = $workCount;
-        $metaAgePart = '';
+
+        $profileParts = [];
         if (!empty($actress['birthday'])) {
-            $metaAge = (new DateTime($actress['birthday']))->diff(new DateTime())->y;
-            $metaAgePart = "（{$metaAge}歳）";
+            $age = (new DateTime($actress['birthday']))->diff(new DateTime())->y;
+            $profileParts[] = "{$age}歳";
         }
-        $metaSizePart = '';
         if (!empty($actress['bust']) && !empty($actress['waist']) && !empty($actress['hip'])) {
-            $metaSizePart = "B{$actress['bust']}/W{$actress['waist']}/H{$actress['hip']}。";
+            $profileParts[] = "B{$actress['bust']}/W{$actress['waist']}/H{$actress['hip']}";
         }
-        $metaYear = date('Y');
-        $metaDescription = "{$metaName}{$metaAgePart}の最新AV作品{$metaWorkCount}本をジャンル別に検索できる。{$metaSizePart}評価順・新着順での並べ替えにも対応。{$metaYear}年の最新作品を随時更新中。";
+        $profilePart = $profileParts ? '（' . implode('・', $profileParts) . '）' : '';
+
+        $latestRelease = Work::latestReleaseDateByActress($actress['id']);
+        $latestTag = latestReleaseTag($latestRelease);
+        $latestMonth = latestReleaseMonth($latestRelease);
+        $latestTagSuffix = $latestTag ? " {$latestTag}" : '';
+        $latestSentence = $latestMonth ? "{$latestMonth}発売の最新作まで収録。" : '';
+
+        if ($isFewWorks) {
+            $pageTitle = "{$metaName}のAV作品一覧（{$metaWorkCount}本）{$latestTagSuffix} | " . SITE_NAME;
+            $metaDescription = "{$metaName}{$profilePart}のAV作品{$metaWorkCount}本をまとめて一覧化。無料で見れる画像・動画を掲載。{$latestSentence}FANZAで配信中。";
+        } else {
+            $topGenresText = implode('、', array_slice(array_column($genres, 'name'), 0, 3));
+            $genresClause = $topGenresText ? "{$topGenresText}など人気ジャンル別に整理し、" : '';
+            $pageTitle = "{$metaName}の作品一覧｜全{$metaWorkCount}本を網羅・人気作から最新作まで{$latestTagSuffix} | " . SITE_NAME;
+            $metaDescription = "{$metaName}{$profilePart}の全作品{$metaWorkCount}本を一覧化。{$genresClause}無料で見れる画像・動画を掲載。{$latestSentence}FANZAで配信中。";
+        }
 
         render('actress', [
-            'pageTitle' => $actress['name'] . 'のジャンル別作品一覧 | ' . SITE_NAME,
+            'pageTitle' => $pageTitle,
             'metaDescription' => $metaDescription,
             'breadcrumbs' => [
                 ['label' => 'TOP', 'url' => ''],

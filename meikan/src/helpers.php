@@ -100,3 +100,24 @@ function currentFullUrl(): string
     $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
     return $scheme . '://' . $host . $path;
 }
+
+/**
+ * 発売日が直近3ヶ月以内なら "[YYYY年M月最新作収録]" 形式で返す。範囲外/null は空文字。
+ */
+function latestReleaseTag(?string $releaseDate): string
+{
+    $month = latestReleaseMonth($releaseDate);
+    return $month === '' ? '' : "[{$month}最新作収録]";
+}
+
+/**
+ * 発売日が直近3ヶ月以内なら "YYYY年M月" 形式で返す。範囲外/null は空文字。
+ */
+function latestReleaseMonth(?string $releaseDate): string
+{
+    if (!$releaseDate) return '';
+    $threshold = (new DateTime())->modify('-3 months')->format('Y-m-d');
+    if ($releaseDate < $threshold) return '';
+    $dt = new DateTime($releaseDate);
+    return sprintf('%s年%d月', $dt->format('Y'), (int)$dt->format('m'));
+}

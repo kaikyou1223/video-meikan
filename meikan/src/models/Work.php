@@ -154,6 +154,49 @@ class Work
         return $result;
     }
 
+    public static function latestReleaseDateByActress(int $actressId): ?string
+    {
+        $cacheKey = "latest_release_actress_{$actressId}";
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) return $cached === '' ? null : $cached;
+
+        $db = Database::getInstance();
+        $stmt = $db->prepare('
+            SELECT MAX(w.release_date)
+            FROM works w
+            INNER JOIN actress_work aw ON w.id = aw.work_id
+            WHERE aw.actress_id = ? AND w.release_date IS NOT NULL
+        ');
+        $stmt->execute([$actressId]);
+        $result = $stmt->fetchColumn();
+        $value = $result ?: null;
+
+        Cache::set($cacheKey, $value ?? '');
+        return $value;
+    }
+
+    public static function latestReleaseDateByActressAndGenre(int $actressId, int $genreId): ?string
+    {
+        $cacheKey = "latest_release_actress_genre_{$actressId}_{$genreId}";
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) return $cached === '' ? null : $cached;
+
+        $db = Database::getInstance();
+        $stmt = $db->prepare('
+            SELECT MAX(w.release_date)
+            FROM works w
+            INNER JOIN actress_work aw ON w.id = aw.work_id
+            INNER JOIN work_genre wg ON w.id = wg.work_id
+            WHERE aw.actress_id = ? AND wg.genre_id = ? AND w.release_date IS NOT NULL
+        ');
+        $stmt->execute([$actressId, $genreId]);
+        $result = $stmt->fetchColumn();
+        $value = $result ?: null;
+
+        Cache::set($cacheKey, $value ?? '');
+        return $value;
+    }
+
     public static function recentByActressAndGenre(int $actressId, int $genreId, int $limit = 10): array
     {
         $cacheKey = "works_recent_{$actressId}_{$genreId}_{$limit}";

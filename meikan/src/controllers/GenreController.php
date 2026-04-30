@@ -81,9 +81,18 @@ class GenreController
             ];
         }
 
+        $latestRelease = Work::latestReleaseDateByActressAndGenre($actress['id'], $genre['id']);
+        $latestTag = latestReleaseTag($latestRelease);
+        $latestMonth = latestReleaseMonth($latestRelease);
+        $latestTagSuffix = $latestTag ? " {$latestTag}" : '';
+        $latestSentence = $latestMonth ? "{$latestMonth}発売の最新{$genre['name']}作品も収録。" : '';
+
+        $pageTitle = "{$actress['name']}の{$genre['name']}作品 全{$totalWorksAll}本｜無料サンプル動画・画像つき{$latestTagSuffix} | " . SITE_NAME;
+        $metaDescription = "{$actress['name']}の{$genre['name']}作品全{$totalWorksAll}本を発売日順に一覧化。無料で見れる画像・動画つき。{$latestSentence}FANZAで配信中の{$actress['name']}×{$genre['name']}を網羅。";
+
         render('genre', [
-            'pageTitle' => $actress['name'] . 'の' . $genre['name'] . '作品一覧 | ' . SITE_NAME,
-            'metaDescription' => $actress['name'] . 'の' . $genre['name'] . '作品' . $totalWorksAll . '本を人気順・新着順で一覧。サンプル画像・レビュー評価付きで好みの作品が見つかる。' . date('Y') . '年最新作も随時更新。',
+            'pageTitle' => $pageTitle,
+            'metaDescription' => $metaDescription,
             'breadcrumbs' => [
                 ['label' => 'TOP', 'url' => ''],
                 ['label' => $actress['name'], 'url' => $actress['slug'] . '/'],
