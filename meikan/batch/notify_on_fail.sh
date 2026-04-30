@@ -26,13 +26,21 @@ if [ $# -eq 0 ]; then
     exit 64
 fi
 
-# プロジェクトの .env から SLACK_BOT_TOKEN / SLACK_CHANNEL を読む
+# プロジェクトの .env から SLACK_BOT_TOKEN / SLACK_CHANNEL のみ読む。
+# .env の DB_PASS 等が特殊文字を含む場合、bash の source ではパースエラーに
+# なるため、Slack 関連のキーだけを行単位で抽出して export する。
 ENV_FILE="$(cd "$(dirname "$0")/.." && pwd)/.env"
 if [ -f "$ENV_FILE" ]; then
-    set -a
-    # shellcheck disable=SC1090
-    source "$ENV_FILE"
-    set +a
+    while IFS='=' read -r _key _value; do
+        case "$_key" in
+            SLACK_BOT_TOKEN|SLACK_CHANNEL)
+                # 前後のクォートを除去
+                _value="${_value%\"}"; _value="${_value#\"}"
+                _value="${_value%\'}"; _value="${_value#\'}"
+                export "$_key=$_value"
+                ;;
+        esac
+    done < <(grep -E '^(SLACK_BOT_TOKEN|SLACK_CHANNEL)=' "$ENV_FILE" 2>/dev/null)
 fi
 
 LOG_DIR="${HOME}/cron_logs"
