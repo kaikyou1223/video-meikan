@@ -49,10 +49,36 @@ class ApiController
         $workIds = array_column($works, 'id');
         $workSampleImages = Work::getSampleImagesBulk($workIds);
 
-        // work-card-v2 パーシャルでHTML生成
+        // 挿入ヘルパー用コンテキスト
+        $actress = Actress::findById($actressId);
+        $insertionMode = $genreId ? 'genre' : 'actress';
+        $similarActresses = [];
+        $otherGenres = [];
+        if ($insertionMode === 'genre' && $actress) {
+            $allGenres = Actress::getGenres((int)$actress['id']);
+            $candidates = array_values(array_filter($allGenres, fn($g) => (int)$g['id'] !== $genreId));
+            if ($candidates) {
+                $coverIds = array_map(fn($g) => (int)$g['id'], $candidates);
+                $covers = Genre::getCoverImagesForActress((int)$actress['id'], $coverIds);
+                foreach ($candidates as $g) {
+                    $g['cover_image'] = $covers[(int)$g['id']] ?? '';
+                    $otherGenres[] = $g;
+                }
+            }
+        } elseif ($insertionMode === 'actress' && $actress) {
+            $similars = Actress::getSimilarActresses((int)$actress['id']);
+            $similarActresses = !empty($similars) ? $similars : Actress::getRelatedActresses((int)$actress['id']);
+        }
+
+        // work-card-v2 + 挿入ヘルパーでHTML生成
+        $worksOffset = $offset;
+        $workIndex = $worksOffset;
         ob_start();
         foreach ($works as $work) {
             require TEMPLATE_DIR . '/partials/work-card-v2.php';
+            $workIndex++;
+            $globalIndex = $workIndex;
+            require TEMPLATE_DIR . '/partials/work-list-insertions.php';
         }
         $html = ob_get_clean();
 

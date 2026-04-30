@@ -38,4 +38,41 @@ class Genre
         $stmt->execute([$actressId]);
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
+
+    /**
+     * 指定女優×各ジャンルの代表作品サムネを一括取得
+     * @return array<int, string> [genreId => thumbnail_url]
+     */
+    public static function getCoverImagesForActress(int $actressId, array $genreIds): array
+    {
+        if (empty($genreIds)) return [];
+
+        $cacheKey = 'genre_covers_' . $actressId . '_' . md5(implode(',', $genreIds));
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) return $cached;
+
+        $placeholders = implode(',', array_fill(0, count($genreIds), '?'));
+        $db = Database::getInstance();
+        $stmt = $db->prepare("
+            SELECT wg.genre_id, w.thumbnail_url
+            FROM work_genre wg
+            INNER JOIN works w ON w.id = wg.work_id
+            INNER JOIN actress_work aw ON aw.work_id = w.id
+            WHERE aw.actress_id = ? AND wg.genre_id IN ({$placeholders})
+              AND w.thumbnail_url IS NOT NULL AND w.thumbnail_url != ''
+            ORDER BY w.review_count DESC, w.release_date DESC
+        ");
+        $stmt->execute(array_merge([$actressId], $genreIds));
+
+        $covers = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $gid = (int)$row['genre_id'];
+            if (!isset($covers[$gid])) {
+                $covers[$gid] = $row['thumbnail_url'];
+            }
+        }
+
+        Cache::set($cacheKey, $covers);
+        return $covers;
+    }
 }

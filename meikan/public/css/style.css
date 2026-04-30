@@ -751,14 +751,129 @@ ul, ol { list-style: none; }
     text-align: center;
 }
 .ad-slot__inner {
-    background: var(--color-card);
-    border-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 90px;
-    color: var(--color-text-sub);
+}
+
+/* --- Other Genres Inline Card (ジャンルページ用) --- */
+.other-genres-inline {
+    background: var(--color-bg);
+    border: 1px solid #E0E0E2;
+    border-radius: var(--radius);
+    padding: 12px;
+    grid-column: 1 / -1;
+}
+.other-genres-inline__title {
     font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text-sub);
+    margin-bottom: 10px;
+}
+.other-genres-inline__scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 4px;
+}
+.other-genres-inline__scroll::-webkit-scrollbar {
+    display: none;
+}
+.other-genres-inline__card {
+    flex-shrink: 0;
+    width: 140px;
+    scroll-snap-align: start;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-card);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-border);
+}
+.other-genres-inline__image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #E8E8EA;
+}
+.other-genres-inline__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.other-genres-inline__placeholder {
+    width: 100%;
+    height: 100%;
+    background: #E8E8EA;
+}
+.other-genres-inline__body {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.other-genres-inline__name {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-text);
+}
+.other-genres-inline__count {
+    font-size: 11px;
+    color: var(--color-text-sub);
+}
+@media (min-width: 768px) {
+    .other-genres-inline {
+        padding: 16px 20px;
+    }
+    .other-genres-inline__card {
+        width: 170px;
+    }
+    .other-genres-inline__name {
+        font-size: 14px;
+    }
+}
+
+/* インフィード（作品グリッドに混ぜる） */
+.ad-slot--infeed {
+    margin: 0;
+    grid-column: 1 / -1;
+}
+.ad-slot--infeed .ad-slot__inner {
+    min-height: 250px;
+}
+
+/* 末尾 — SP: 300×250 / PC: 728×90 をCSSで切替 */
+.ad-slot--bottom {
+    margin: 32px 0 24px;
+}
+.ad-slot--bottom .ad-slot__inner--sp {
+    min-height: 250px;
+}
+.ad-slot--bottom .ad-slot__inner--pc {
+    display: none;
+}
+@media (min-width: 1024px) {
+    .ad-slot--bottom .ad-slot__inner--sp {
+        display: none;
+    }
+    .ad-slot--bottom .ad-slot__inner--pc {
+        display: flex;
+        min-height: 90px;
+    }
+}
+
+/* PC専用 右サイドバー（独立した3列目） */
+.ad-slot--sidebar {
+    margin: 0;
+}
+.ad-slot--sidebar .ad-slot__inner {
+    min-height: 250px;
 }
 
 /* --- Pagination --- */

@@ -47,6 +47,21 @@ class Actress
         return $result;
     }
 
+    public static function findById(int $actressId): ?array
+    {
+        $cacheKey = 'actress_id_' . $actressId;
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) return $cached;
+
+        $db = Database::getInstance();
+        $stmt = $db->prepare('SELECT * FROM actresses WHERE id = ?');
+        $stmt->execute([$actressId]);
+        $result = $stmt->fetch() ?: null;
+
+        if ($result) Cache::set($cacheKey, $result);
+        return $result;
+    }
+
     public static function getGenres(int $actressId): array
     {
         $cacheKey = 'actress_genres_' . $actressId;

@@ -1,3 +1,20 @@
+<?php
+// 「他のジャンル」データ組み立て（現在ジャンル除外、上位作品の代表サムネ付き）
+$otherGenres = [];
+if (!empty($allGenres)) {
+    $candidates = array_values(array_filter($allGenres, fn($g) => (int)$g['id'] !== (int)$genre['id']));
+    if ($candidates) {
+        $coverIds = array_map(fn($g) => (int)$g['id'], $candidates);
+        $covers = Genre::getCoverImagesForActress((int)$actress['id'], $coverIds);
+        foreach ($candidates as $g) {
+            $g['cover_image'] = $covers[(int)$g['id']] ?? '';
+            $otherGenres[] = $g;
+        }
+    }
+}
+$insertionMode = 'genre';
+$worksOffset = 0;
+?>
 <h1 class="page-title"><?= h($actress['name']) ?>の<?= h($genre['name']) ?>作品一覧</h1>
 
 <!-- 検索バー（全幅） -->
@@ -101,32 +118,11 @@
         </div>
 
         <div class="work-list work-list--v2" id="workList" data-page="1" data-total-pages="<?= $pagination['total_pages'] ?>" data-actress-id="<?= (int)$actress['id'] ?>" data-genre-id="<?= (int)$genre['id'] ?>">
-            <?php $workIndex = 0; ?>
+            <?php $workIndex = $worksOffset; ?>
             <?php foreach ($works as $work): ?>
                 <?php require TEMPLATE_DIR . '/partials/work-card-v2.php'; ?>
-                <?php $workIndex++; ?>
-                <?php if (($workIndex === 6 || $workIndex === 12) && !empty($similarActresses)): ?>
-                    <div class="similar-inline <?= $workIndex === 6 ? 'similar-inline--sp' : 'similar-inline--pc' ?>">
-                        <p class="similar-inline__title"><?= h($actress['name']) ?>が好きな人にオススメ</p>
-                        <div class="similar-inline__scroll">
-                            <?php foreach ($similarActresses as $similar): ?>
-                                <a href="<?= h(url($similar['slug'] . '/')) ?>" class="similar-inline__item">
-                                    <div class="similar-inline__image">
-                                        <?php if (!empty($similar['thumbnail_url'])): ?>
-                                            <img src="<?= h($similar['thumbnail_url']) ?>" alt="<?= h($similar['name']) ?>" width="300" height="300" loading="lazy">
-                                        <?php else: ?>
-                                            <div class="similar-inline__placeholder"></div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <span class="similar-inline__name"><?= h($similar['name']) ?><?php if (!empty($similar['birthday'])): ?><span class="similar-inline__age">（<?= (new DateTime($similar['birthday']))->diff(new DateTime())->y ?>歳）</span><?php endif; ?></span>
-                                    <?php if (!empty($similar['bust']) && !empty($similar['waist']) && !empty($similar['hip'])): ?>
-                                        <span class="similar-inline__size">B<?= (int)$similar['bust'] ?> W<?= (int)$similar['waist'] ?> H<?= (int)$similar['hip'] ?></span>
-                                    <?php endif; ?>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
+                <?php $workIndex++; $globalIndex = $workIndex; ?>
+                <?php require TEMPLATE_DIR . '/partials/work-list-insertions.php'; ?>
             <?php endforeach; ?>
         </div>
 
@@ -138,4 +134,22 @@
         </div>
     </div>
 
+    <?php // ④ PC専用 右サイドバー広告（独立した3列目／1280px+で表示） ?>
+    <aside class="page-layout__ad-sidebar">
+        <?php
+        $adSize = 'sidebar';
+        $adLabel = 'PCサイドバー広告';
+        $adType = 'banner';
+        require TEMPLATE_DIR . '/partials/ad-slot.php';
+        ?>
+    </aside>
+
 </div>
+
+<?php
+// ② 末尾広告（page-layout の後）
+$adSize = 'bottom';
+$adLabel = '末尾広告';
+$adType = 'widget';
+require TEMPLATE_DIR . '/partials/ad-slot.php';
+?>

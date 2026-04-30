@@ -1,6 +1,10 @@
 <?php
 $hasProfile = !empty($actress['bust']) || !empty($actress['height']) || !empty($actress['birthday']) || !empty($actress['blood_type']) || !empty($actress['hobby']) || !empty($actress['prefectures']);
 $recommendActresses = !empty($similarActresses) ? $similarActresses : (!empty($relatedActresses) ? $relatedActresses : []);
+// インフィード挿入用エイリアス
+$similarActresses = $recommendActresses;
+$insertionMode = 'actress';
+$worksOffset = 0;
 ?>
 <div class="profile-section">
     <div class="profile-section__image">
@@ -157,8 +161,11 @@ $recommendActresses = !empty($similarActresses) ? $similarActresses : (!empty($r
         </div>
 
         <div class="work-list work-list--v2" id="workList" data-page="1" data-total-pages="<?= $worksPagination['total_pages'] ?>" data-actress-id="<?= (int)$actress['id'] ?>">
+            <?php $workIndex = $worksOffset; ?>
             <?php foreach ($works as $work): ?>
                 <?php require TEMPLATE_DIR . '/partials/work-card-v2.php'; ?>
+                <?php $workIndex++; $globalIndex = $workIndex; ?>
+                <?php require TEMPLATE_DIR . '/partials/work-list-insertions.php'; ?>
             <?php endforeach; ?>
         </div>
 
@@ -172,8 +179,26 @@ $recommendActresses = !empty($similarActresses) ? $similarActresses : (!empty($r
         <?php endif; ?>
     </div>
 
+    <?php // ④ PC専用 右サイドバー広告（独立した3列目／1280px+で表示） ?>
+    <aside class="page-layout__ad-sidebar">
+        <?php
+        $adSize = 'sidebar';
+        $adLabel = 'PCサイドバー広告';
+        $adType = 'banner';
+        require TEMPLATE_DIR . '/partials/ad-slot.php';
+        ?>
+    </aside>
+
 </div>
 <?php endif; ?>
+
+<?php
+// ② 末尾広告（recommendActresses 直前）
+$adSize = 'bottom';
+$adLabel = '末尾広告';
+$adType = 'widget';
+require TEMPLATE_DIR . '/partials/ad-slot.php';
+?>
 
 <?php if (!empty($recommendActresses)): ?>
 <div class="similar-inline">
