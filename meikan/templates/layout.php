@@ -77,6 +77,7 @@
 
     <script>var BASE_URL = '<?= url() ?>';</script>
     <script src="<?= asset('js/app.js') ?>" defer></script>
+    <script src="<?= asset('js/ads.js') ?>" defer></script>
     <?php if (!empty($genre) || !empty($works)): ?>
     <script src="<?= asset('js/genre.js') ?>" defer></script>
     <?php endif; ?>

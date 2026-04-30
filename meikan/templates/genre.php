@@ -134,12 +134,13 @@ $worksOffset = 0;
         </div>
     </div>
 
-    <?php // ④ PC専用 右サイドバー広告（独立した3列目／1280px+で表示） ?>
+    <?php // ④ PC専用 右サイドバー広告（独立した3列目／1280px+で表示）— stickyで常時可視のため即時 ?>
     <aside class="page-layout__ad-sidebar">
         <?php
         $adSize = 'sidebar';
         $adLabel = 'PCサイドバー広告';
         $adType = 'banner';
+        $adLazy = false;
         require TEMPLATE_DIR . '/partials/ad-slot.php';
         ?>
     </aside>
@@ -147,9 +148,10 @@ $worksOffset = 0;
 </div>
 
 <?php
-// ② 末尾広告（page-layout の後）
+// ② 末尾広告（page-layout の後）— 完全に下なので lazy
 $adSize = 'bottom';
 $adLabel = '末尾広告';
 $adType = 'widget';
+$adLazy = true;
 require TEMPLATE_DIR . '/partials/ad-slot.php';
 ?>

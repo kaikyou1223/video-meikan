@@ -148,34 +148,44 @@ rsync -avz --delete \
 
 ---
 
-## Step 4: ページスピードチェック（必須）
+## Step 4: PageSpeed Insights 計測（必須）
 
-デプロイ後、主要ページのレスポンス速度を確認する。
+デプロイ後、変更が影響するページに対し PageSpeed Insights API を実行し、Lighthouse スコアの劣化がないか確認する。
 
 ```bash
-# 主要ページのTTFB（Time To First Byte）を計測
-for url in \
-  "https://av-hakase.com/" \
-  "https://av-hakase.com/meikan/" \
-  "https://av-hakase.com/article/"; do
-  time_total=$(curl -o /dev/null -s -w '%{time_total}' "$url")
-  echo "$url → ${time_total}s"
-done
+# 変更内容に応じて対象URLを決める例
+# - テンプレ/CSS/モデル変更: 影響する代表的な女優ページ・ジャンルページ + トップ
+# - 記事変更: 該当記事ページ
+./scripts/pagespeed.sh "https://av-hakase.com/" mobile
+./scripts/pagespeed.sh "https://av-hakase.com/hatano-yui/" mobile
+./scripts/pagespeed.sh "https://av-hakase.com/hatano-yui/kyonyu/" mobile
 ```
 
-**判定基準:**
+サブコマンド:
+- `mobile` / `desktop` / `both`
+- `--detail` で LCP要素・全Opportunities・Diagnostics・大きいリソースまで展開
 
-| レスポンス時間 | 判定 |
-|--------------|------|
-| 1.0秒未満 | OK |
-| 1.0〜3.0秒 | 警告 — ユーザーに報告し、原因調査を提案 |
-| 3.0秒以上 | 異常 — ユーザーに即報告。キャッシュ切れ・重いクエリ等を疑う |
+**判定基準（Performance スコア）:**
 
-**3.0秒以上のページがあった場合のチェック項目:**
+| スコア | 判定 | 対応 |
+|---|---|---|
+| 90+ | 🟢 OK | そのまま完了 |
+| 50-89 | 🟡 要改善 | Top Opportunities をユーザー報告。改善するか確認 |
+| 50未満 | 🔴 ブロッキング | 即報告。`./scripts/pagespeed.sh URL mobile --detail` で詳細調査 |
 
-1. キャッシュが効いているか（本番の `cache/` ディレクトリを確認）
-2. 重いDBクエリがないか（該当コントローラのモデル呼び出しを確認）
-3. 2回目のリクエストでも遅い場合はキャッシュ以外の問題
+**注意:**
+- PageSpeed API は 1リクエスト 30〜60秒かかる。変更ページが多い場合は重要ページに絞る
+- 速度劣化は新規追加要素（FANZA等の3rd party script・大きい画像・blocking JS）が主因
+- スクリプトは `.env` の `PAGESPEED_API_KEY` を読む（`.gitignore`済み、precam.jp と同じキーを流用可）
+
+**サーバー応答だけ確認したい場合のフォールバック:**
+
+```bash
+for url in "https://av-hakase.com/" "https://av-hakase.com/meikan/"; do
+  echo "$url → $(curl -o /dev/null -s -w '%{time_total}' "$url")s"
+done
+```
+（PageSpeed APIが使えない時のみ。本来は Step 4 の API 計測を必須とする。）
 
 ---
 

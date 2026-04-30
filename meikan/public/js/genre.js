@@ -58,6 +58,11 @@
                     list.innerHTML = data.html;
                 }
 
+                // 追加されたlazy広告枠に IntersectionObserver を適用
+                if (typeof window.adsLazyInit === 'function') {
+                    window.adsLazyInit(list);
+                }
+
                 totalPages = data.total_pages;
                 currentPage = data.page;
 

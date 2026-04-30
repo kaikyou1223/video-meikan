@@ -20,6 +20,8 @@ if (($globalIndex - 9) >= 0 && ($globalIndex - 9) % 4 === 0) {
     $adLabel = "インフィード広告 #{$adNum}";
     // バナー始まりで交互（odd=banner / even=widget）
     $adType = ($adNum % 2 === 1) ? 'banner' : 'widget';
+    // 1番目（globalIndex 9）は即時、それ以降は viewport 接近時に遅延ロード
+    $adLazy = ($adNum > 1);
     require __DIR__ . '/ad-slot.php';
     return;
 }

@@ -11,6 +11,7 @@ meikan/logs/
 meikan/batch/data/
 
 # 環境変数
+.env
 ga4/.env
 gsc/.env
 

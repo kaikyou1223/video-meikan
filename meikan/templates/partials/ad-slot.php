@@ -1,6 +1,7 @@
 <?php
 $adSize = $adSize ?? 'responsive';
 $adType = $adType ?? 'banner'; // 'banner' | 'widget'
+$adLazy = !empty($adLazy);     // true: viewport 接近時にスクリプトをロード
 $affiliateId = 'avhakase2026-001';
 
 // FANZA 広告ユニット
@@ -28,12 +29,23 @@ $renderUnit = function (string $type, string $size) use ($units, $affiliateId): 
         <?php
     }
 };
+
+// lazy時は <template> でラップ（中の <script> は実行されない）
+$renderInner = function (string $type, string $size) use ($renderUnit, $adLazy): void {
+    if ($adLazy) {
+        echo '<template class="ad-slot__lazy-template">';
+        $renderUnit($type, $size);
+        echo '</template>';
+    } else {
+        $renderUnit($type, $size);
+    }
+};
 ?>
-<div class="ad-slot ad-slot--<?= h($adSize) ?>" data-size="<?= h($adSize) ?>" data-type="<?= h($adType) ?>">
+<div class="ad-slot ad-slot--<?= h($adSize) ?>" data-size="<?= h($adSize) ?>" data-type="<?= h($adType) ?>"<?= $adLazy ? ' data-ad-lazy="1"' : '' ?>>
     <?php if ($adSize === 'bottom'): ?>
-        <div class="ad-slot__inner ad-slot__inner--sp"><?php $renderUnit($adType, '300x250'); ?></div>
-        <div class="ad-slot__inner ad-slot__inner--pc"><?php $renderUnit($adType, '728x90'); ?></div>
+        <div class="ad-slot__inner ad-slot__inner--sp"><?php $renderInner($adType, '300x250'); ?></div>
+        <div class="ad-slot__inner ad-slot__inner--pc"><?php $renderInner($adType, '728x90'); ?></div>
     <?php else: ?>
-        <div class="ad-slot__inner"><?php $renderUnit($adType, '300x250'); ?></div>
+        <div class="ad-slot__inner"><?php $renderInner($adType, '300x250'); ?></div>
     <?php endif; ?>
 </div>
